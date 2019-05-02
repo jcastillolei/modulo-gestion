@@ -78,11 +78,13 @@
 		                            {!! Form::select('item', $items, 1, ['class' => 'form-control']) !!}
 		                        </td>
 		                        <td>
-		                            {!! Form::text('cantidad', null, ['class' => 'form-control', 'required']) !!}
+		                            {!! Form::number('cantidad', null, ['class' => 'form-control', 'required']) !!}
 		                        </td>                                  
 		                        <td>	
 		                        	{!! Form::hidden('acc', 2) !!}
 		                            {!! Form::submit('Añadir', ['class' => 'btn btn-primary']) !!}
+		                            <a class="btn btn-success" href="
+                                        {!! url('limpiar') !!}">Limpiar lista</a>
 		                        </td>
 		                    </tr>
                         {!! Form::close() !!}      

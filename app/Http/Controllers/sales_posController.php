@@ -123,7 +123,7 @@ class sales_posController extends AppBaseController
 
         $salesPos = $this->salesPosRepository->update($request->all(), $id);
 
-        Flash::success('Sales Pos updated successfully.');
+        Flash::success('Sales Pos actualizado correctamente.');
 
         return redirect(route('salesPos.index'));
     }
@@ -149,7 +149,7 @@ class sales_posController extends AppBaseController
 
         $this->salesPosRepository->delete($id);
 
-        Flash::success('Sales Pos deleted successfully.');
+        Flash::success('Sales Pos eliminado.');
 
         return redirect(route('salesPos.index'));
     }

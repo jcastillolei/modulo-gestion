@@ -67,7 +67,7 @@ class usuario_bodegaController extends AppBaseController
 
         $usuarioBodega = $this->usuarioBodegaRepository->create($input);
 
-        Flash::success('Usuario Bodega saved successfully.');
+        Flash::success('Usuario Bodega creado correctamente.');
 
         $log = new Log();
 
@@ -144,7 +144,7 @@ class usuario_bodegaController extends AppBaseController
 
         $usuarioBodega = $this->usuarioBodegaRepository->update($request->all(), $id);
 
-        Flash::success('Usuario Bodega updated successfully.');
+        Flash::success('Usuario Bodega actualizado correctamente.');
 
         $log = new Log();
 
@@ -180,7 +180,7 @@ class usuario_bodegaController extends AppBaseController
         $usr = usuario_bodega::find($id);
         $usr->delete();
 
-        Flash::success('Usuario Bodega deleted successfully.');
+        Flash::success('Usuario Bodega eliminado.');
 
         return redirect(route('usuarioBodegas.index'));
     }

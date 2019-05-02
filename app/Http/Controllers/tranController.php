@@ -96,12 +96,12 @@ class tranController extends Controller
     {   
     
 
-        $accion = $request->input("acc");;
+        $accion = $request->input("acc");
 
         if ($accion==2) {
             
-            $item = $request->input("item");;
-            $cantidad = $request->input("cantidad");;
+            $item = $request->input("item");
+            $cantidad = $request->input("cantidad");
 
 
             Session::push('items', [
@@ -219,6 +219,50 @@ class tranController extends Controller
 
             foreach ($itemsLista as $itm) 
             {
+                $stock = DB::table('0_stock_moves as s')
+                    ->leftJoin('0_voided as b', 's.type', '=', 'b.type')
+                    ->leftJoin('0_voided as c', 's.trans_no', '=', 'c.id')
+                    ->whereNull('c.id')
+                    ->where('stock_id',$itm['stock_id'])
+                    ->where('tran_date','<=',date('Y-m-d'))
+                    ->where('loc_code',$idBod)
+                    ->sum('qty'); 
+
+                echo $stock;
+
+                if ($stock<$itm['cantidad']) {
+
+                    Flash::error('La cantidad de items que deseas transferir no se encuentra disponible.');
+
+                    $ub = DB::table('usuario_bodegas')
+                    ->where('idUsuario', '=', auth()->user()->id)
+                    ->get();
+
+                    $bodegas = new Collection([]);
+                    $bodeg = DB::table('0_locations')
+                    ->get();;
+
+                    foreach ($bodeg as $b) {
+                        foreach ($ub as $u) 
+                        {
+                            if ($b->loc_code == $u->idBodega) 
+                            {
+                                $bodegas->put($b->loc_code, $b->location_name); 
+                            } 
+                        }            
+                    }
+
+                    $bodegas->put('0','Seleccione');
+                    $usuarios = User::pluck('name','id');
+                    $usuarios->put('0','Seleccione');
+                    $items = stock_master::pluck('description','stock_id');
+                    $items->put('0','Seleccione');
+
+
+                    $est=1;
+                   return view('tran.index', compact('bodegas','usuarios','items','idBod','fecha','idItm','est','repor'));
+                }
+
                 $stockMove1 = new stock_moves;
 
                 $stockMove1->stock_id = $itm['stock_id'];
@@ -428,5 +472,43 @@ class tranController extends Controller
 
         return $datos;
     }
+
+    public function Limpiar() 
+    {
+
+        Session::forget('items');
+
+        $ub = DB::table('usuario_bodegas')
+            ->where('idUsuario', '=', auth()->user()->id)
+            ->get();
+
+            $bodegas = new Collection([]);
+            $bodeg = DB::table('0_locations')
+            ->get();;
+
+        foreach ($bodeg as $b) {
+            foreach ($ub as $u) 
+            {
+                if ($b->loc_code == $u->idBodega) 
+                {
+                    $bodegas->put($b->loc_code, $b->location_name); 
+                } 
+            }            
+        }
+
+        $bodegas->put('0','Seleccione');
+        $usuarios = User::pluck('name','id');
+        $usuarios->put('0','Seleccione');
+        $items = stock_master::pluck('description','stock_id');
+        $items->put('0','Seleccione');
+
+        $itemsLista = Session::get('items');
+
+
+       return view('tran.index', compact('bodegas','usuarios','items','idBod','fecha','idItm','est','repor'))
+            ->with('itemsLista', $itemsLista);
+    }
+
+
 
 }

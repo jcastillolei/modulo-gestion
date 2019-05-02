@@ -58,7 +58,7 @@ class chart_masterController extends AppBaseController
 
         $chartMaster = $this->chartMasterRepository->create($input);
 
-        Flash::success('Chart Master saved successfully.');
+        Flash::success('Chart Master creado correctamente.');
 
         return redirect(route('chartMasters.index'));
     }
@@ -123,7 +123,7 @@ class chart_masterController extends AppBaseController
 
         $chartMaster = $this->chartMasterRepository->update($request->all(), $id);
 
-        Flash::success('Chart Master updated successfully.');
+        Flash::success('Chart Master actualizado correctamente.');
 
         return redirect(route('chartMasters.index'));
     }
@@ -149,7 +149,7 @@ class chart_masterController extends AppBaseController
 
         $this->chartMasterRepository->delete($id);
 
-        Flash::success('Chart Master deleted successfully.');
+        Flash::success('Chart Master eliminado.');
 
         return redirect(route('chartMasters.index'));
     }

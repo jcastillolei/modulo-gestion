@@ -59,7 +59,7 @@ class loc_stockController extends AppBaseController
 
         $locStock = $this->locStockRepository->create($input);
 
-        Flash::success('Loc Stock saved successfully.');
+        Flash::success('Loc Stock creado correctamente..');
 
 
 
@@ -126,7 +126,7 @@ class loc_stockController extends AppBaseController
 
         $locStock = $this->locStockRepository->update($request->all(), $id);
 
-        Flash::success('Loc Stock updated successfully.');
+        Flash::success('Loc Stock actualizado correctamente.');
 
         return redirect(route('locStocks.index'));
     }
@@ -152,7 +152,7 @@ class loc_stockController extends AppBaseController
 
         $this->locStockRepository->delete($id);
 
-        Flash::success('Loc Stock deleted successfully.');
+        Flash::success('Loc Stock eliminado.');
 
         return redirect(route('locStocks.index'));
     }

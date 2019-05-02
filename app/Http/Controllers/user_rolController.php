@@ -58,7 +58,7 @@ class user_rolController extends AppBaseController
 
         $userRol = $this->userRolRepository->create($input);
 
-        Flash::success('User Rol saved successfully.');
+        Flash::success('User Rol creado correctamente.');
 
         return redirect(route('userRols.index'));
     }
@@ -123,7 +123,7 @@ class user_rolController extends AppBaseController
 
         $userRol = $this->userRolRepository->update($request->all(), $id);
 
-        Flash::success('User Rol updated successfully.');
+        Flash::success('User Rol actualizado correctamente.');
 
         return redirect(route('userRols.index'));
     }
@@ -149,7 +149,7 @@ class user_rolController extends AppBaseController
 
         $this->userRolRepository->delete($id);
 
-        Flash::success('User Rol deleted successfully.');
+        Flash::success('User Rol eliminado.');
 
         return redirect(route('userRols.index'));
     }

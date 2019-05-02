@@ -30,11 +30,13 @@ Route::get('exportPdfTransf', 'tranController@exportPdf');
 
 Route::get('exportExcelMov', 'movimientosController@exportExcel');
 Route::get('exportPdfMov', 'movimientosController@exportPdf');
+Route::get('limpiarMov', 'movimientosController@Limpiar');
 
 Route::get('exportExcelLog', 'ReporteLogController@exportExcel');
 Route::get('exportPdfLog', 'ReporteLogController@exportPdf');
 
 Route::get('deleteList/{item}', 'tranController@deleteList');
+Route::get('limpiar', 'tranController@Limpiar');
 
 Route::resource('salesPos', 'sales_posController');
 

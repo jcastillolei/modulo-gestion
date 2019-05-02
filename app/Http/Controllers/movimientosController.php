@@ -619,4 +619,43 @@ class movimientosController extends Controller
 */
         return $datos;
     }
+
+    public function Limpiar() 
+    {
+
+        Session::forget('items');
+
+        $bodeg = DB::table('0_locations')
+                            ->get();;
+
+        $ub = DB::table('usuario_bodegas')
+                ->where('idUsuario', '=', auth()->user()->id)
+                ->get();
+
+        $bodegas = new Collection([]);
+
+        foreach ($bodeg as $b) {
+            foreach ($ub as $u) 
+            {
+                if ($b->loc_code == $u->idBodega) 
+                {
+                    $bodegas->put($b->loc_code, $b->location_name); 
+                } 
+            }            
+        }
+
+        $bodegas->put('0','Seleccione');
+        $usuarios = usuario_normal::pluck('nombre','id');
+        $usuarios->put('0','Seleccione');
+        $items = stock_master::pluck('description','stock_id');
+        $items->put('0','Seleccione');
+
+
+        $est=1;
+
+        $itemsLista = Session::get('items');
+
+        return view('movimientos.index', compact('bodegas','usuarios','items','idBod','fecha','est','repor'))
+            ->with('itemsLista', $itemsLista);
+    }
 }

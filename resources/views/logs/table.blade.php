@@ -15,3 +15,4 @@
     @endforeach
     </tbody>
 </table>
+<div align="center">{{ $logs->links() }}</div>

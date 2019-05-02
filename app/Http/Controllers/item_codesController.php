@@ -59,7 +59,7 @@ class item_codesController extends AppBaseController
 
         $itemCodes = $this->itemCodesRepository->create($input);
 
-        Flash::success('Item Codes saved successfully.');
+        Flash::success('Item Codes creado correctamente.');
 
         return redirect(route('itemCodes.index'));
     }
@@ -124,7 +124,7 @@ class item_codesController extends AppBaseController
 
         $itemCodes = $this->itemCodesRepository->update($request->all(), $id);
 
-        Flash::success('Item Codes updated successfully.');
+        Flash::success('Item Codes actualizado correctamente.');
 
         return redirect(route('itemCodes.index'));
     }
@@ -150,7 +150,7 @@ class item_codesController extends AppBaseController
 
         $this->itemCodesRepository->delete($id);
 
-        Flash::success('Item Codes deleted successfully.');
+        Flash::success('Item Codes eliminado.');
 
         return redirect(route('itemCodes.index'));
     }

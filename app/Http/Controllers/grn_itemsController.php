@@ -58,7 +58,7 @@ class grn_itemsController extends AppBaseController
 
         $grnItems = $this->grnItemsRepository->create($input);
 
-        Flash::success('Grn Items saved successfully.');
+        Flash::success('Grn Items creado correctamente.');
 
         return redirect(route('grnItems.index'));
     }
@@ -123,7 +123,7 @@ class grn_itemsController extends AppBaseController
 
         $grnItems = $this->grnItemsRepository->update($request->all(), $id);
 
-        Flash::success('Grn Items updated successfully.');
+        Flash::success('Grn Items actualizado correctamente.');
 
         return redirect(route('grnItems.index'));
     }
@@ -149,7 +149,7 @@ class grn_itemsController extends AppBaseController
 
         $this->grnItemsRepository->delete($id);
 
-        Flash::success('Grn Items deleted successfully.');
+        Flash::success('Grn Items eliminado.');
 
         return redirect(route('grnItems.index'));
     }

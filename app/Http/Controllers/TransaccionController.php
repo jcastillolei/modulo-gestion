@@ -58,7 +58,7 @@ class TransaccionController extends AppBaseController
 
         $transaccion = $this->transaccionRepository->create($input);
 
-        Flash::success('Transaccion saved successfully.');
+        Flash::success('Transaccion creado correctamente.');
 
         return redirect(route('transaccions.index'));
     }
@@ -123,7 +123,7 @@ class TransaccionController extends AppBaseController
 
         $transaccion = $this->transaccionRepository->update($request->all(), $id);
 
-        Flash::success('Transaccion updated successfully.');
+        Flash::success('Transaccion actualizado correctamente.');
 
         return redirect(route('transaccions.index'));
     }
@@ -149,7 +149,7 @@ class TransaccionController extends AppBaseController
 
         $this->transaccionRepository->delete($id);
 
-        Flash::success('Transaccion deleted successfully.');
+        Flash::success('Transaccion eliminado.');
 
         return redirect(route('transaccions.index'));
     }

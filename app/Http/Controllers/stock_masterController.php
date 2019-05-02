@@ -253,7 +253,7 @@ class stock_masterController extends AppBaseController
 
         $this->stockMasterRepository->delete($id);
 
-        Flash::success('Stock Master deleted successfully.');
+        Flash::success('Stock Master eliminado.');
 
         return redirect(route('stockMasters.index'));
     }

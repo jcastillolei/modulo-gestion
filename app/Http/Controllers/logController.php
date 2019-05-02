@@ -59,7 +59,7 @@ class logController extends AppBaseController
 
         $log = $this->logRepository->create($input);
 
-        Flash::success('Log saved successfully.');
+        Flash::success('Log creado correctamente.');
 
         return redirect(route('logs.index'));
     }
@@ -124,7 +124,7 @@ class logController extends AppBaseController
 
         $log = $this->logRepository->update($request->all(), $id);
 
-        Flash::success('Log updated successfully.');
+        Flash::success('Log actualizado correctamente.');
 
         return redirect(route('logs.index'));
     }
@@ -150,7 +150,7 @@ class logController extends AppBaseController
 
         $this->logRepository->delete($id);
 
-        Flash::success('Log deleted successfully.');
+        Flash::success('Log eliminado.');
 
         return redirect(route('logs.index'));
     }

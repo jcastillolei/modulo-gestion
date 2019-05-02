@@ -59,7 +59,7 @@ class usuario_normalController extends AppBaseController
 
         $usuarioNormal = $this->usuarioNormalRepository->create($input);
 
-        Flash::success('Usuario Normal saved successfully.');
+        Flash::success('Usuario Normal creado correctamente.');
 
         $log = new Log();
 
@@ -133,7 +133,7 @@ class usuario_normalController extends AppBaseController
 
         $usuarioNormal = $this->usuarioNormalRepository->update($request->all(), $id);
 
-        Flash::success('Usuario Normal updated successfully.');
+        Flash::success('Usuario Normal actualizado correctamente.');
 
         return redirect(route('usuarioNormals.index'));
     }
@@ -159,7 +159,7 @@ class usuario_normalController extends AppBaseController
 
         $this->usuarioNormalRepository->delete($id);
 
-        Flash::success('Usuario Normal deleted successfully.');
+        Flash::success('Usuario Normal eliminado.');
 
         return redirect(route('usuarioNormals.index'));
     }

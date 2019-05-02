@@ -83,7 +83,7 @@ class userController extends AppBaseController
 
         $user_rol->save();
 
-        Flash::success('User saved successfully.');
+        Flash::success('User creado correctamente.');
 
         $log = new Log();
 
@@ -168,7 +168,7 @@ class userController extends AppBaseController
 
         
 
-        Flash::success('User updated successfully.');
+        Flash::success('User actualizado correctamente.');
 
         $log = new Log();
 
@@ -203,7 +203,7 @@ class userController extends AppBaseController
 
         $this->userRepository->delete($id);
 
-        Flash::success('User deleted successfully.');
+        Flash::success('User eliminado.');
 
         return redirect(route('users.index'));
     }
