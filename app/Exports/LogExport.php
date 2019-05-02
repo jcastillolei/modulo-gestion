@@ -31,6 +31,9 @@ class LogExport implements FromCollection, WithHeadings, WithColumnFormatting, W
     {
         $logs = Session::get('loger');
 
+        if (empty($logs)) {
+            $logs=DB::table('logs')->get();            
+        }
 
         $collection = collect([]);
 
@@ -41,7 +44,7 @@ class LogExport implements FromCollection, WithHeadings, WithColumnFormatting, W
         	$collection->push([
         		'usuario' => $it->usuarioLog,
         		'descripcion' =>  $it->descripcion,
-        		'fecha' => $it->fecha    
+        		'fecha' => $it->created_at    
         	]);
 
         }

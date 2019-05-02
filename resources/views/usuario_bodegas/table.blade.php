@@ -1,16 +1,37 @@
 <table class="table table-responsive" id="usuarioBodegas-table">
     <thead>
         <tr>
-        <th>Usuario</th>
-        <th>Bodega</th>
-            
+            <th>Codigo Bodega</th>
+            <th>Nombre Bodega</th>
+            <th>Id Usuario</th>
+            <th>Nombre Usuario</th>     
         </tr>
     </thead>
     <tbody>
     @foreach($usuarioBodegas as $usuarioBodega)
         <tr>
-            <td>{!! $usuarioBodega->idUsuario !!}</td>
             <td>{!! $usuarioBodega->idBodega !!}</td>
+
+            <td>
+                @php
+                    $itm = DB::table('0_locations')
+                   ->where('loc_code',$usuarioBodega['idBodega'])
+                    ->first();
+                    echo $itm->location_name;
+                @endphp
+            </td>
+
+            <td>{!! $usuarioBodega->idUsuario !!}</td>
+
+            <td>
+                @php
+                    $itm = DB::table('users')
+                   ->where('id',$usuarioBodega['idUsuario'])
+                    ->first();
+                    echo $itm->name;
+                @endphp
+            </td>
+
             <td>
                 {!! Form::open(['route' => ['usuarioBodegas.destroy', $usuarioBodega->id], 'method' => 'delete']) !!}
                 <div class='btn-group'>

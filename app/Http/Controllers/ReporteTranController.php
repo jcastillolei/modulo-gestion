@@ -155,6 +155,56 @@ class ReporteTranController extends Controller
                 ->where('fecha', '=', $fecha)
                 ->get();
         }
+        //---------------------------------------------------------------------------
+
+        elseif (!empty($idBod) && !empty($idItm)) 
+        {
+            $transaccions = DB::table('transaccions')
+                ->where('Bodega', '=', $idBod)
+                ->where('Item', '=', $idItm)
+                ->get();
+        }
+        elseif (!empty($idBod) && !empty($idUsuario)) 
+        {
+            $transaccions = DB::table('transaccions')
+                ->where('Bodega', '=', $idBod)
+                ->where('responsable', '=', $use->name)
+                ->get();
+        }
+        elseif (!empty($idBod) && !empty($fecha)) 
+        {
+            $transaccions = DB::table('transaccions')
+                ->where('Bodega', '=', $idBod)
+                ->where('fecha', '=', $fecha)
+                ->get();
+        }
+        //---------------------------------------------------------------------------
+
+        elseif (!empty($idUsuario) && !empty($idItm)) 
+        {
+            $transaccions = DB::table('transaccions')
+                ->where('Item', '=', $idItm)
+                ->where('responsable', '=', $use->name)
+                ->get();
+        }
+        elseif (!empty($fecha) && !empty($idItm)) 
+        {
+            $transaccions = DB::table('transaccions')
+                ->where('Item', '=', $idItm)
+                ->where('fecha', '=', $fecha)
+                ->get();
+        }
+        //---------------------------------------------------------------------------
+        elseif (!empty($idUsuario) && !empty($fecha)) 
+        {
+            $transaccions = DB::table('transaccions')
+                ->where('Item', '=', $idItm)
+                ->where('fecha', '=', $fecha)
+                ->get();
+        }
+
+        
+
         elseif (!empty($idBod)) 
         {
             $transaccions = DB::table('transaccions')
@@ -218,7 +268,7 @@ class ReporteTranController extends Controller
 
         Session::put('transacciones',$transaccions);
 
-        return view('stock_moves.index', compact('bodegas','usuarios','items','idBod','fecha','idItm','est'))
+        return view('stock_moves.index', compact('bodegas','usuarios','items','idBod','fecha','idItm','idUsuario','est'))
             ->with('stockMoves', $transaccions);
 
     }
@@ -299,11 +349,8 @@ class ReporteTranController extends Controller
         $pdf = PDF::loadView('pdf.products', compact('transaccions'));
 
         return $pdf->download('Reporte.pdf');
-  
-        //return $pdf->download('itsolutionstuff.pdf');
 
-
-        return ' '.$idBod.' '.$idUsu.' '.$idItm.' ';
+    
     }
 
     public function exportExcel() 

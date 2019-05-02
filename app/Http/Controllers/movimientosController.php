@@ -17,6 +17,7 @@ use App\Models\audit_trail;
 use App\Models\gl_trans;
 use Session;
 use DB;
+use Flash;
 
 use Illuminate\Support\Collection;
 
@@ -88,7 +89,7 @@ class movimientosController extends Controller
 
         Session::forget('acci');
 
-        echo $accion;
+        
 
         if ($acc=="anadir") {
 
@@ -115,6 +116,45 @@ class movimientosController extends Controller
                 Session::put('idBod',$idBod);
                 Session::put('fecha',$fecha);
 
+                if ($idBod == "0" || $idUsuario == "0") {
+
+                    Flash::error('Debes seleccionar bodega y usuario.');
+
+                    $bodeg = DB::table('0_locations')
+                            ->get();;
+
+                    $ub = DB::table('usuario_bodegas')
+                            ->where('idUsuario', '=', auth()->user()->id)
+                            ->get();
+
+                    $bodegas = new Collection([]);
+
+                    foreach ($bodeg as $b) {
+                        foreach ($ub as $u) 
+                        {
+                            if ($b->loc_code == $u->idBodega) 
+                            {
+                                $bodegas->put($b->loc_code, $b->location_name); 
+                            } 
+                        }            
+                    }
+
+                    $bodegas->put('0','Seleccione');
+                    $usuarios = usuario_normal::pluck('nombre','id');
+                    $usuarios->put('0','Seleccione');
+                    $items = stock_master::pluck('description','stock_id');
+                    $items->put('0','Seleccione');
+
+
+                    $est=1;
+
+                    $itemsLista = Session::get('items');
+
+                    return view('movimientos.index', compact('bodegas','usuarios','items','idBod','fecha','est','repor'))
+                        ->with('itemsLista', $itemsLista);
+                }
+
+                
                 $nroRegistro = stock_moves::where('type', 17)->max('trans_no'); 
 
                 $nroRegistro++;
@@ -142,6 +182,44 @@ class movimientosController extends Controller
                 }
 
                 $itemsLista = Session::get('items');
+
+                if (empty($itemsLista)) {
+
+                    Flash::error('Debes ingresar items.');
+                
+                    $bodeg = DB::table('0_locations')
+                            ->get();;
+
+                    $ub = DB::table('usuario_bodegas')
+                            ->where('idUsuario', '=', auth()->user()->id)
+                            ->get();
+
+                    $bodegas = new Collection([]);
+
+                    foreach ($bodeg as $b) {
+                        foreach ($ub as $u) 
+                        {
+                            if ($b->loc_code == $u->idBodega) 
+                            {
+                                $bodegas->put($b->loc_code, $b->location_name); 
+                            } 
+                        }            
+                    }
+
+                    $bodegas->put('0','Seleccione');
+                    $usuarios = usuario_normal::pluck('nombre','id');
+                    $usuarios->put('0','Seleccione');
+                    $items = stock_master::pluck('description','stock_id');
+                    $items->put('0','Seleccione');
+
+
+                    $est=1;
+
+                    $itemsLista = Session::get('items');
+
+                    return view('movimientos.index', compact('bodegas','usuarios','items','idBod','fecha','est','repor'))
+                        ->with('itemsLista', $itemsLista);
+                }
 
                 $nroGl = gl_trans::where('type', 17)->max('type_no');   
 

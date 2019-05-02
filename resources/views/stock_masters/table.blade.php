@@ -12,9 +12,25 @@
     @foreach($stockMasters as $stockMaster)
         <tr>
             <td>{!! $stockMaster->description !!}</td>
-            <td>{!! $stockMaster->inventory_account !!}</td>
-            <td>{!! $stockMaster->adjustment_account !!}</td>
-            <td>{!! $stockMaster->material_cost !!}</td>
+            <td class="desc">
+                @php
+                    $bod = DB::table('0_chart_master')
+                    ->where('account_code',$stockMaster->inventory_account)
+                    ->first();
+                    echo $bod->account_name;
+                @endphp
+            </td>
+
+            <td class="desc">
+                @php
+                    $bod = DB::table('0_chart_master')
+                    ->where('account_code',$stockMaster->adjustment_account)
+                    ->first();
+                    echo $bod->account_name;
+                @endphp
+            </td>
+
+            <td>${!! number_format($stockMaster->material_cost, 0) !!}</td>
             <td>
                 {!! Form::open(['route' => ['stockMasters.destroy', $stockMaster->stock_id], 'method' => 'delete']) !!}
                 <div class='btn-group'>

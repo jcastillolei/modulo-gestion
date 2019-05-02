@@ -166,7 +166,7 @@ class userController extends AppBaseController
             return redirect(route('users.index'));
         }
 
-        $user = $this->userRepository->update($request->all(), $id);
+        
 
         Flash::success('User updated successfully.');
 

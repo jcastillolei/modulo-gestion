@@ -15,13 +15,14 @@
 <!-- Inventory Account Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('inventory_account', 'Cuenta de Inventario:') !!}
-    {!! Form::text('inventory_account', null, ['class' => 'form-control']) !!}
+    {!! Form::select('inventory_account', $chartMaster, null, ['class' => 'form-control']) !!}
+    
 </div>
 
 <!-- Adjustment Account Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('adjustment_account', 'Cuenta de Ajuste:') !!}
-    {!! Form::text('adjustment_account', null, ['class' => 'form-control']) !!}
+    {!! Form::select('adjustment_account', $chartMaster, null, ['class' => 'form-control']) !!}
 </div>
 
 

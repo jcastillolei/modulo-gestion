@@ -101,32 +101,45 @@ class ReporteInvController extends Controller
         //Valida los valores del filtro 
         if (!empty($idBod) && !empty($idItem))
         {   
+            Session::forget('itemsBodega');
+            
 
             $itemsBodega = DB::table('0_loc_stock')
                 ->where('loc_code', '=', $idBod)
                 ->where('stock_id', '=', $idItem)
                 ->get();
+
+            Session::put('itemsBodega',$itemsBodega);
 
         }
         elseif (!empty($idBod) && empty($idItem))
         {   
-
+            Session::forget('itemsBodega');
+            
             $itemsBodega = DB::table('0_loc_stock')
                 ->where('loc_code', '=', $idBod)
                 ->get();
 
+            Session::put('itemsBodega',$itemsBodega);
+
         }elseif (empty($idBod) && !empty($idItem))
         {   
-
+            Session::forget('itemsBodega');
+            
             $itemsBodega = DB::table('0_loc_stock')
                 ->where('stock_id', '=', $idItem)
                 ->get();
 
+            Session::put('itemsBodega',$itemsBodega);
+
         }elseif (empty($idBod) && empty($idItem))
         {   
-
+            Session::forget('itemsBodega');
+            
             $itemsBodega = DB::table('0_loc_stock')
                 ->get();
+
+            Session::put('itemsBodega',$itemsBodega);
 
         }
         
@@ -156,7 +169,7 @@ class ReporteInvController extends Controller
         $items = stock_master::pluck('description','stock_id');
         $items->put('0','Seleccione');
 
-        Session::put('itemsBodega',$itemsBodega);
+        
 
         return view('item_bodegas.index', compact('bodegas','est','idBod','idItem','items'))
            ->with('itemsBodega', $itemsBodega);
@@ -210,7 +223,7 @@ class ReporteInvController extends Controller
 
     public function exportExcel() 
     {
-        if (empty(Session::put('idBodItem'))) {
+        if (empty(Session::get('itemsBodega'))) {
             $itemsBodega = DB::table('0_loc_stock')
                 ->get();
             Session::put('itemsBodega',$itemsBodega);
@@ -219,7 +232,7 @@ class ReporteInvController extends Controller
         $log = new Log();
 
         $log->usuarioLog=auth()->user()->id;
-        $log->descripcion='El usuario '.auth()->user()->name.' ha generado un reporte de Item en Excel.';
+        $log->descripcion='El usuario '.auth()->user()->name.' ha generado un reporte de Item en Excel .';
         $log->estado='1';
         $log->fecha= date('d-m-Y');
 
@@ -254,15 +267,13 @@ class ReporteInvController extends Controller
 
     public function getData() 
     {
-        if (empty(Session::put('idBodItem'))) {
+        if (empty(Session::get('itemsBodega'))) {
             $itemsBodega = DB::table('0_loc_stock')
                 ->get();
             Session::put('itemsBodega',$itemsBodega);
         }
 
-            $datos = Session::get('itemsBodega');
-
-    
+        $datos = Session::get('itemsBodega');
 
         return $datos;
     }

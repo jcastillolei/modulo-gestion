@@ -24,6 +24,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 
 
+
 class exportTrans implements FromCollection, WithHeadings, WithColumnFormatting, WithTitle, WithStrictNullComparison
 {
     /**
@@ -39,12 +40,24 @@ class exportTrans implements FromCollection, WithHeadings, WithColumnFormatting,
 
         foreach ($transacciones as $it) {
         	
+            $bod = DB::table('0_locations')
+            ->where('loc_code',$it->Bodega)
+            ->first();
+
+
+
+            $itm = DB::table('0_stock_master')
+            ->where('stock_id',$it->Item)
+            ->first();
+
 
 
         	$collection->push([
         		'tipoTransaccion' => $it->tipoTransaccion,
         		'Bodega' =>  $it->Bodega,
+                'Nombre Bodega' =>  $bod->location_name,
         		'Item' => $it->Item,
+                'Nombre Item' => $itm->description,
         		'cantidad' =>  $it->cantidad,
         		'fecha' =>  $it->fecha,
                 'responsable' =>  $it->responsable,
@@ -62,7 +75,9 @@ class exportTrans implements FromCollection, WithHeadings, WithColumnFormatting,
             return [
                 'Tipo Transaccion',
                 'Bodega',
+                'Nombre Bodega',
                 'Item',
+                'Nombre Item',
                 'cantidad',
                 'fecha',
                 'Responsable',

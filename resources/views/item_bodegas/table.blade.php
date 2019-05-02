@@ -1,8 +1,10 @@
 <table class="table table-responsive" id="itemBodegas-table">
     <thead>
         <tr>
-            <th>Item</th>
+            <th>Codigo Bodega</th>
             <th>Bodega</th>
+            <th>Item</th>
+            <th>Descripcion</th>
             <th>Stock</th>
         </tr>
     </thead>
@@ -12,8 +14,28 @@
         @else
             @foreach($itemsBodega as $itemBodega)
                 <tr>
-                    <td>{!! $itemBodega->stock_id !!}</td>
                     <td>{!! $itemBodega->loc_code !!}</td>
+
+                    <td class="desc">
+                      @php
+                        $bod = DB::table('0_locations')
+                            ->where('loc_code',$itemBodega->loc_code)
+                            ->first();
+                        echo $bod->location_name;
+                      @endphp
+                    </td>
+
+                    <td>{!! $itemBodega->stock_id !!}</td>
+
+                    <td class="desc">
+                      @php
+                        $itm = DB::table('0_stock_master')
+                            ->where('stock_id',$itemBodega->stock_id)
+                            ->first();
+                        echo $itm->description;
+                      @endphp
+                    </td>
+                    
                     <td>
                         @php
                             $stock = DB::table('0_stock_moves as s')
@@ -24,7 +46,8 @@
                                 ->where('tran_date','<=',date('Y-m-d'))
                                 ->where('loc_code',$itemBodega->loc_code)
                                 ->sum('qty'); 
-                        echo $stock;
+
+                            echo $stock;
                         @endphp
                     </td>
                 </tr>
