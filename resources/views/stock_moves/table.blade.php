@@ -39,4 +39,3 @@
     @endforeach
     </tbody>
 </table>
-<div align="center">{{ $stockMoves->links() }}</div>
