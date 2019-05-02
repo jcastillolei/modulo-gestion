@@ -35,7 +35,7 @@ class usuario_bodegaController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $usuarioBodegas = $this->usuarioBodegaRepository->all();
+        $usuarioBodegas = usuario_bodega::paginate(15);;
 
         return view('usuario_bodegas.index')
             ->with('usuarioBodegas', $usuarioBodegas);

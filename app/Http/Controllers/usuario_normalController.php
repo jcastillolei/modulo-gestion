@@ -8,8 +8,10 @@ use App\Repositories\usuario_normalRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use App\Models\log;
+use App\Models\usuario_normal;
 use Flash;
 use Response;
+
 
 class usuario_normalController extends AppBaseController
 {
@@ -30,7 +32,7 @@ class usuario_normalController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $usuarioNormals = $this->usuarioNormalRepository->all();
+        $usuarioNormals = usuario_normal::paginate(15);
 
         return view('usuario_normals.index')
             ->with('usuarioNormals', $usuarioNormals);

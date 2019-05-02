@@ -34,3 +34,4 @@
     @endforeach
     </tbody>
 </table>
+<div align="center">{{ $usuarioNormals->links() }}</div>

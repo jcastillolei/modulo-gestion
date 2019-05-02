@@ -37,7 +37,7 @@ class userController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $users = $this->userRepository->all();
+        $users = User::paginate(15);
 
         $roles = roles::pluck('nombre','id');
 

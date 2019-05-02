@@ -34,7 +34,7 @@ class locationsController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $locations = $this->locationsRepository->all();
+        $locations = locations::paginate(15);
 
         return view('locations.index')
             ->with('locations', $locations);

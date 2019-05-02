@@ -51,7 +51,7 @@ class ReporteInvController extends Controller
      */
     public function index(Request $request)
     {
-        $itemsBodega = $this->itemBodegaRepository->all();
+        $itemsBodega = DB::table('item_bodegas')->paginate(15);
 
         Session::forget('itemsBodega');
 
@@ -108,6 +108,8 @@ class ReporteInvController extends Controller
                 ->where('loc_code', '=', $idBod)
                 ->where('stock_id', '=', $idItem)
                 ->get();
+
+                
 
             Session::put('itemsBodega',$itemsBodega);
 

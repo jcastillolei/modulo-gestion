@@ -12,30 +12,31 @@
         </tr>
     </thead>
     <tbody>
-    @foreach($stockMoves as $stockMoves)
+    @foreach($stockMoves as $stockMove)
         <tr>
-            <td>{!! $stockMoves->Bodega !!}</td>
+            <td>{!! $stockMove->Bodega !!}</td>
             <td class="desc">
                 @php
                     $bod = DB::table('0_locations')
-                    ->where('loc_code',$stockMoves->Bodega)
+                    ->where('loc_code',$stockMove->Bodega)
                     ->first();
                     echo $bod->location_name;
                 @endphp
             </td>
-            <td>{!! $stockMoves->tipoTransaccion !!}</td>
-            <td>{!! $stockMoves->Item !!}</td>
+            <td>{!! $stockMove->tipoTransaccion !!}</td>
+            <td>{!! $stockMove->Item !!}</td>
             <td class="desc">
                 @php
                     $bod = DB::table('0_stock_master')
-                    ->where('stock_id',$stockMoves->Item)
+                    ->where('stock_id',$stockMove->Item)
                     ->first();
                     echo $bod->description;
                 @endphp
             </td>
-            <td>{!! $stockMoves->cantidad !!}</td>
-            <td>{!! $stockMoves->responsable !!}</td>
+            <td>{!! $stockMove->cantidad !!}</td>
+            <td>{!! $stockMove->responsable !!}</td>
         </tr>
     @endforeach
     </tbody>
 </table>
+<div align="center">{{ $stockMoves->links() }}</div>

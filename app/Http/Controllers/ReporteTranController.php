@@ -61,7 +61,7 @@ class ReporteTranController extends Controller
      */
     public function index(Request $request)
     {
-        $stockMoves = $this->TransaccionesRepository->all();
+        $stockMoves = DB::table('transaccions')->paginate(15);
 
         $bodeg = DB::table('0_locations')
                 ->get();;
