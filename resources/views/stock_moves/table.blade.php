@@ -2,7 +2,6 @@
     <thead>
         <tr>
             <th>Codigo bodega</th>
-            <th>Nombre bodega</th>
             <th>Tipo Transaccion</th>
             <th>Item</th>
             <th>Descripcion</th>
@@ -15,14 +14,6 @@
     @foreach($stockMoves as $stockMove)
         <tr>
             <td>{!! $stockMove->Bodega !!}</td>
-            <td class="desc">
-                @php
-                    $bod = DB::table('0_locations')
-                    ->where('loc_code',$stockMove->Bodega)
-                    ->first();
-                    echo $bod->location_name;
-                @endphp
-            </td>
             <td>{!! $stockMove->tipoTransaccion !!}</td>
             <td>{!! $stockMove->Item !!}</td>
             <td class="desc">
