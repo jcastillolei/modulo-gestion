@@ -37,7 +37,7 @@ class userController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $users = $this->userRepository->all();
+        $users = User::paginate(15);
 
         $roles = roles::pluck('nombre','id');
 
@@ -83,7 +83,7 @@ class userController extends AppBaseController
 
         $user_rol->save();
 
-        Flash::success('User saved successfully.');
+        Flash::success('User creado correctamente.');
 
         $log = new Log();
 
@@ -166,9 +166,9 @@ class userController extends AppBaseController
             return redirect(route('users.index'));
         }
 
-        $user = $this->userRepository->update($request->all(), $id);
+        
 
-        Flash::success('User updated successfully.');
+        Flash::success('User actualizado correctamente.');
 
         $log = new Log();
 
@@ -203,7 +203,7 @@ class userController extends AppBaseController
 
         $this->userRepository->delete($id);
 
-        Flash::success('User deleted successfully.');
+        Flash::success('User eliminado.');
 
         return redirect(route('users.index'));
     }

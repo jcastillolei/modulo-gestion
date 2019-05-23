@@ -58,7 +58,7 @@ class gl_transController extends AppBaseController
 
         $glTrans = $this->glTransRepository->create($input);
 
-        Flash::success('Gl Trans saved successfully.');
+        Flash::success('Gl Trans creado correctamente.');
 
         return redirect(route('glTrans.index'));
     }
@@ -123,7 +123,7 @@ class gl_transController extends AppBaseController
 
         $glTrans = $this->glTransRepository->update($request->all(), $id);
 
-        Flash::success('Gl Trans updated successfully.');
+        Flash::success('Gl Trans actualizado correctamente.');
 
         return redirect(route('glTrans.index'));
     }
@@ -149,7 +149,7 @@ class gl_transController extends AppBaseController
 
         $this->glTransRepository->delete($id);
 
-        Flash::success('Gl Trans deleted successfully.');
+        Flash::success('Gl Trans eliminado.');
 
         return redirect(route('glTrans.index'));
     }

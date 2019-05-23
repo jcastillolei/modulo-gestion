@@ -34,7 +34,7 @@ class locationsController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $locations = $this->locationsRepository->all();
+        $locations = locations::paginate(15);
 
         return view('locations.index')
             ->with('locations', $locations);
@@ -90,7 +90,7 @@ class locationsController extends AppBaseController
 
         //$locations = $this->locationsRepository->create($input);
 
-        Flash::success('Locations saved successfully.');
+        Flash::success('Bodega creada correctamente.');
 
         $log = new Log();
 
@@ -165,7 +165,7 @@ class locationsController extends AppBaseController
 
         $locations = $this->locationsRepository->update($request->all(), $id);
 
-        Flash::success('Locations updated successfully.');
+        Flash::success('Bodega actualizado correctamente.');
 
         $log = new Log();
 
@@ -200,7 +200,7 @@ class locationsController extends AppBaseController
 
         $this->locationsRepository->delete($id);
 
-        Flash::success('Locations deleted successfully.');
+        Flash::success('Locations eliminado.');
 
         return redirect(route('locations.index'));
     }

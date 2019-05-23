@@ -10,18 +10,18 @@
         </tr>
     </thead>
     <tbody>
-    @foreach($locations as $locations)
+    @foreach($locations as $location)
         <tr>
-            <td>{!! $locations->location_name !!}</td>
-            <td>{!! $locations->delivery_address !!}</td>
-            <td>{!! $locations->phone !!}</td>
-            <td>{!! $locations->email !!}</td>
-            <td>{!! $locations->contact !!}</td>
+            <td>{!! $location->location_name !!}</td>
+            <td>{!! $location->delivery_address !!}</td>
+            <td>{!! $location->phone !!}</td>
+            <td>{!! $location->email !!}</td>
+            <td>{!! $location->contact !!}</td>
             <td>
-                {!! Form::open(['route' => ['locations.destroy', $locations->loc_code], 'method' => 'delete']) !!}
+                {!! Form::open(['route' => ['locations.destroy', $location->loc_code], 'method' => 'delete']) !!}
                 <div class='btn-group'>
-                    <a href="{!! route('locations.show', [$locations->loc_code]) !!}" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-eye-open"></i></a>
-                    <a href="{!! route('locations.edit', [$locations->loc_code]) !!}" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-edit"></i></a>
+                    <a href="{!! route('locations.show', [$location->loc_code]) !!}" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-eye-open"></i></a>
+                    <a href="{!! route('locations.edit', [$location->loc_code]) !!}" class='btn btn-default btn-xs'><i class="glyphicon glyphicon-edit"></i></a>
                 </div>
                 {!! Form::close() !!}
             </td>
@@ -29,3 +29,4 @@
     @endforeach
     </tbody>
 </table>
+<div align="center">{{ $locations->links() }}</div>

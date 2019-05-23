@@ -8,8 +8,10 @@ use App\Repositories\usuario_normalRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use App\Models\log;
+use App\Models\usuario_normal;
 use Flash;
 use Response;
+
 
 class usuario_normalController extends AppBaseController
 {
@@ -30,7 +32,7 @@ class usuario_normalController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $usuarioNormals = $this->usuarioNormalRepository->all();
+        $usuarioNormals = usuario_normal::paginate(15);
 
         return view('usuario_normals.index')
             ->with('usuarioNormals', $usuarioNormals);
@@ -59,7 +61,7 @@ class usuario_normalController extends AppBaseController
 
         $usuarioNormal = $this->usuarioNormalRepository->create($input);
 
-        Flash::success('Usuario Normal saved successfully.');
+        Flash::success('Usuario Normal creado correctamente.');
 
         $log = new Log();
 
@@ -133,7 +135,7 @@ class usuario_normalController extends AppBaseController
 
         $usuarioNormal = $this->usuarioNormalRepository->update($request->all(), $id);
 
-        Flash::success('Usuario Normal updated successfully.');
+        Flash::success('Usuario Normal actualizado correctamente.');
 
         return redirect(route('usuarioNormals.index'));
     }
@@ -159,7 +161,7 @@ class usuario_normalController extends AppBaseController
 
         $this->usuarioNormalRepository->delete($id);
 
-        Flash::success('Usuario Normal deleted successfully.');
+        Flash::success('Usuario Normal eliminado.');
 
         return redirect(route('usuarioNormals.index'));
     }

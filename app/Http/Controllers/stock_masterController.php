@@ -17,6 +17,12 @@ use App\Models\Locations;
 use App\Models\item_codes;
 use App\Models\log;
 
+use App\Models\chart_master;
+use Illuminate\Support\Collection;
+use App\Http\Requests\Createchart_masterRequest;
+use App\Http\Requests\Updatechart_masterRequest;
+use App\Repositories\chart_masterRepository;
+
 class stock_masterController extends AppBaseController
 {
     /** @var  stock_masterRepository */
@@ -36,7 +42,7 @@ class stock_masterController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $stockMasters = $this->stockMasterRepository->all();
+        $stockMasters = stock_master::paginate(15);
 
         return view('stock_masters.index')
             ->with('stockMasters', $stockMasters);
@@ -49,7 +55,13 @@ class stock_masterController extends AppBaseController
      */
     public function create()
     {
-        return view('stock_masters.create');
+        $chartMaster = new Collection([]);
+
+        $chartMaster->put('0','Seleccione');
+        $chartMaster = chart_master::pluck('account_name','account_code');
+
+        return view('stock_masters.create')
+            ->with('chartMaster', $chartMaster);
     }
 
     /**
@@ -172,13 +184,18 @@ class stock_masterController extends AppBaseController
     {
         $stockMaster = $this->stockMasterRepository->find($id);
 
+        $chartMaster = new Collection([]);
+
+        $chartMaster->put('0','Seleccione');
+        $chartMaster = chart_master::pluck('account_name','account_code');
+
         if (empty($stockMaster)) {
             Flash::error('Stock Master not found');
 
             return redirect(route('stockMasters.index'));
         }
 
-        return view('stock_masters.edit')->with('stockMaster', $stockMaster);
+        return view('stock_masters.edit', compact('chartMaster'))->with('stockMaster', $stockMaster);
     }
 
     /**
@@ -236,7 +253,7 @@ class stock_masterController extends AppBaseController
 
         $this->stockMasterRepository->delete($id);
 
-        Flash::success('Stock Master deleted successfully.');
+        Flash::success('Stock Master eliminado.');
 
         return redirect(route('stockMasters.index'));
     }

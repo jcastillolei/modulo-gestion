@@ -32,6 +32,7 @@
         <thead>
           <tr>
             <th>Item</th>
+            <th>Descripcion</th>
             <th>Cantidad</th>
           </tr>
         </thead>
@@ -39,6 +40,16 @@
             @foreach($itemsLista as $de)
                 <tr>
                     <td class="unit">{!! $de['stock_id'] !!}</td>
+
+                    <td class="unit">
+                      @php
+                        $itm = DB::table('0_stock_master')
+                            ->where('stock_id',$de['stock_id'])
+                            ->first();
+                        echo $itm->description;
+                      @endphp
+                    </td>
+                    
                     <td class="qty">{!! $de['cantidad'] !!}</td>
                 </tr>
             @endforeach   

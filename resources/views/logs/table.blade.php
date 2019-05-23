@@ -1,8 +1,6 @@
 <table class="table table-responsive" id="logs-table">
     <thead>
         <tr>
-            <th>Id</th>
-        <th>Usuario</th>
         <th>Descripcion</th>
         <th>Fecha</th>
         </tr>
@@ -10,8 +8,6 @@
     <tbody>
     @foreach($logs as $log)
         <tr>
-            <td>{!! $log->id !!}</td>
-            <td>{!! $log->usuarioLog !!}</td>
             <td>{!! $log->descripcion !!}</td>
             <td>{!! $log->fecha !!}</td>
 
@@ -19,3 +15,4 @@
     @endforeach
     </tbody>
 </table>
+<div align="center">{{ $logs->links() }}</div>

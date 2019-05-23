@@ -65,7 +65,7 @@ class item_bodegaController extends AppBaseController
 
         $itemBodega = $this->itemBodegaRepository->create($input);
 
-        Flash::success('Item Bodega saved successfully.');
+        Flash::success('Item Bodega creado correctamente.');
 
         $log = new Log();
 
@@ -139,7 +139,7 @@ class item_bodegaController extends AppBaseController
 
         $itemBodega = $this->itemBodegaRepository->update($request->all(), $id);
 
-        Flash::success('Item Bodega updated successfully.');
+        Flash::success('Item Bodega actualizado correctamente.');
 
         $log = new Log();
 
@@ -174,7 +174,7 @@ class item_bodegaController extends AppBaseController
 
         $this->itemBodegaRepository->delete($id);
 
-        Flash::success('Item Bodega deleted successfully.');
+        Flash::success('Item Bodega eliminado.');
 
         return redirect(route('itemBodegas.index'));
     }

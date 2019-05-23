@@ -64,10 +64,10 @@
                                         {!! Form::select('idItemBodega', $items, $idItm, ['class' => 'form-control']) !!}
                                     </td>
                                     <td>
-                                        {!! Form::select('idUsuario', $usuarios, 0, ['class' => 'form-control']) !!}
+                                        {!! Form::select('idUsuario', $usuarios, $idUsuario, ['class' => 'form-control']) !!}
                                     </td>
                                     <td>
-                                        {!! Form::date('fecha', null, ['class' => 'form-control','id'=>'email_verified_at']) !!}
+                                        {!! Form::date('fecha', $fecha, ['class' => 'form-control','id'=>'email_verified_at']) !!}
                                     </td>
                                      <td>
                                         {!! Form::submit('Filtrar', ['class' => 'btn btn-primary']) !!}

@@ -33,13 +33,24 @@
         <thead>
           <tr>
             <th>Item</th>
+            <th>Descripcion</th>
             <th>Cantidad</th>
           </tr>
         </thead>
         <tbody>
             @foreach($data as $d)
                 <tr>
+
                     <td class="unit">{!! $d['stock_id'] !!}</td>
+                    <td class="unit">
+                      @php
+                        $itm = DB::table('0_stock_master')
+                            ->where('stock_id',$d['stock_id'])
+                            ->first();
+                        echo $itm->description;
+                      @endphp
+                    </td>
+                    
                     <td class="qty">{!! $d['cantidad'] !!}</td>
                 </tr>
             @endforeach    

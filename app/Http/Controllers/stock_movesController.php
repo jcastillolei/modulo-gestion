@@ -59,7 +59,7 @@ class stock_movesController extends AppBaseController
 
         $stockMoves = $this->stockMovesRepository->create($input);
 
-        Flash::success('Stock Moves saved successfully.');
+        Flash::success('Stock Moves creado correctamente.');
 
         $log = new Log();
 
@@ -133,7 +133,7 @@ class stock_movesController extends AppBaseController
 
         $stockMoves = $this->stockMovesRepository->update($request->all(), $id);
 
-        Flash::success('Stock Moves updated successfully.');
+        Flash::success('Stock Moves actualizado correctamente.');
 
         $log = new Log();
 
@@ -168,7 +168,7 @@ class stock_movesController extends AppBaseController
 
         $this->stockMovesRepository->delete($id);
 
-        Flash::success('Stock Moves deleted successfully.');
+        Flash::success('Stock Moves eliminado.');
 
         return redirect(route('stockMoves.index'));
     }

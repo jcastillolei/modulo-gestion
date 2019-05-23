@@ -36,6 +36,16 @@ class UsersExport implements FromCollection, WithHeadings, WithColumnFormatting,
         $collection = collect([]);
 
         foreach ($items as $it) {
+
+            $bod = DB::table('0_locations')
+            ->where('loc_code',$it->loc_code)
+            ->first();
+
+
+
+            $itm = DB::table('0_stock_master')
+            ->where('stock_id',$it->stock_id)
+            ->first();
         	
         	$stock = DB::table('0_stock_moves as s')
                                 ->leftJoin('0_voided as b', 's.type', '=', 'b.type')
@@ -48,9 +58,13 @@ class UsersExport implements FromCollection, WithHeadings, WithColumnFormatting,
 
         	$collection->push([
         		'stock_id' => $it->stock_id,
+                'nombre item' => $itm->description,
         		'loc_code' => $it->loc_code,
+                'nombre bodega' => $bod->location_name,
         		'stock' => $stock
         	]);
+
+
 
         }
 
@@ -61,7 +75,9 @@ class UsersExport implements FromCollection, WithHeadings, WithColumnFormatting,
     {
         return [
             'Item',
+            'Nombre Item',
             'Bodega',
+            'Nombre Bodega',
             'Stock'
         ];
     }
@@ -77,6 +93,8 @@ class UsersExport implements FromCollection, WithHeadings, WithColumnFormatting,
             'A' => NumberFormat::FORMAT_GENERAL,
             'B' => NumberFormat::FORMAT_GENERAL,
             'C' => NumberFormat::FORMAT_GENERAL,
+            'D' => NumberFormat::FORMAT_GENERAL,
+            'F' => NumberFormat::FORMAT_GENERAL,
         ];
     }
 }

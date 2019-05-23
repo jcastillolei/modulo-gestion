@@ -26,8 +26,10 @@
       <table>
         <thead>
           <tr>
-            <th class="desc">Bodega</th>
+            <th class="desc">Codigo Bodega</th>
+            <th class="desc">Nombre Bodega</th>
             <th>Item</th>
+            <th>Descripcion</th>
             <th>Stock</th>
           </tr>
         </thead>
@@ -35,7 +37,26 @@
             @foreach($data as $d)
                 <tr>
                     <td class="desc">{!! $d->loc_code !!}</td>
+                    <td class="desc">
+                      @php
+                        $bod = DB::table('0_locations')
+                            ->where('loc_code',$d->loc_code)
+                            ->first();
+                        echo $bod->location_name;
+                      @endphp
+                    </td>
+
                     <td class="unit">{!! $d->stock_id !!}</td>
+
+                    <td class="desc">
+                      @php
+                        $itm = DB::table('0_stock_master')
+                            ->where('stock_id',$d->stock_id)
+                            ->first();
+                        echo $itm->description;
+                      @endphp
+                    </td>
+
                     <td class="qty">@php
                             $stock = DB::table('0_stock_moves as s')
                                 ->leftJoin('0_voided as b', 's.type', '=', 'b.type')

@@ -58,7 +58,7 @@ class audit_trailController extends AppBaseController
 
         $auditTrail = $this->auditTrailRepository->create($input);
 
-        Flash::success('Audit Trail saved successfully.');
+        Flash::success('Audit Trail creado correctamente.');
 
         return redirect(route('auditTrails.index'));
     }
@@ -123,7 +123,7 @@ class audit_trailController extends AppBaseController
 
         $auditTrail = $this->auditTrailRepository->update($request->all(), $id);
 
-        Flash::success('Audit Trail updated successfully.');
+        Flash::success('Audit Trail actualizado correctamente.');
 
         return redirect(route('auditTrails.index'));
     }
@@ -149,7 +149,7 @@ class audit_trailController extends AppBaseController
 
         $this->auditTrailRepository->delete($id);
 
-        Flash::success('Audit Trail deleted successfully.');
+        Flash::success('Audit Trail eliminado.');
 
         return redirect(route('auditTrails.index'));
     }
