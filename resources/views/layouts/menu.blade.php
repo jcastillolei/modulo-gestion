@@ -71,6 +71,14 @@
     <li class="{{ Request::is('movimientos*') ? 'active' : '' }}">
         <a href="{!! route('movimientos.index') !!}"><i class="fa fa-truck"></i><span>Despacho/Devolucion</span></a>
     </li>
+    <li class="{{ Request::is('bodegaUsuarionormals*') ? 'active' : '' }}">
+    <a href="{!! route('bodegaUsuarionormals.index') !!}"><i class="fa fa-edit"></i><span>Bodega Usuarionormals</span></a>
+    </li>
+
+    <li class="{{ Request::is('sadminBodegueros*') ? 'active' : '' }}">
+        <a href="{!! route('sadminBodegueros.index') !!}"><i class="fa fa-edit"></i><span>Sadmin Bodegueros</span></a>
+    </li>
+
 
 @elseif(!empty(Session::get('rol')) && Session::get('rol') == 3)
 
@@ -103,3 +111,5 @@
     </li>
 
 @endif
+
+

@@ -98,3 +98,7 @@ Route::resource('RepLog', 'ReporteLogController');
 Route::resource('roles', 'rolesController');
 
 Route::resource('userRols', 'user_rolController');
+
+Route::resource('bodegaUsuarionormals', 'bodega_usuarionormalController');
+
+Route::resource('sadminBodegueros', 'sadmin_bodegueroController');
