@@ -9,8 +9,11 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use App\Models\log;
 use App\Models\usuario_normal;
+use App\Models\Locations;
+use App\Models\bodega_usuarionormal;
 use Flash;
 use Response;
+use DB;
 
 
 class usuario_normalController extends AppBaseController
@@ -45,7 +48,9 @@ class usuario_normalController extends AppBaseController
      */
     public function create()
     {
-        return view('usuario_normals.create');
+        $bodegas = locations::pluck('location_name','loc_code');
+
+        return view('usuario_normals.create', compact('bodegas'));
     }
 
     /**
@@ -71,6 +76,13 @@ class usuario_normalController extends AppBaseController
         $log->fecha= date('d-m-Y');
 
         $log->save();
+
+        $usuN = DB::table('usuario_normals')->where('correo', $request->input("correo"))->first();
+
+        $bodega_usuarionormal = bodega_usuarionormal::create([
+            'codBodega' => $request->input("bod"),
+            'idUsuarioNormall' => $usuN->id,
+        ]);
 
         return redirect(route('usuarioNormals.index'));
     }

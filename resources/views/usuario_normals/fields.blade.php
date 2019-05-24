@@ -34,11 +34,19 @@
     {!! Form::text('telefono', null, ['class' => 'form-control']) !!}
 </div>
 
+<!-- Bodega Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('bode', 'Bodega:') !!}
+    {!! Form::select('bod', $bodegas, null, ['class' => 'form-control']) !!}
+</div>
+
 <!-- Estado Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('estado', 'Estado:') !!}
-    {!! Form::number('estado', null, ['class' => 'form-control']) !!}
+    {!! Form::number('estado', 1, ['class' => 'form-control']) !!}
 </div>
+
+
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">

@@ -11,9 +11,13 @@ use Flash;
 use Response;
 use App\Models\log;
 use App\Models\roles;
+use App\Models\Locations;
 use App\Models\user_rol;
 use App\User;
 use DB;
+use Illuminate\Support\Facades\Auth;
+
+use App\Models\sadmin_bodeguero;
 
 use Illuminate\Support\Facades\Hash;
 
@@ -53,8 +57,9 @@ class userController extends AppBaseController
     public function create()
     {
         $roles = roles::pluck('nombre','id');
+        $bodegas = locations::pluck('location_name','loc_code');
 
-        return view('users.create', compact('roles'));
+        return view('users.create', compact('roles'))->with('bodegas', $bodegas);
     }
 
     /**
@@ -74,6 +79,7 @@ class userController extends AppBaseController
             'password' => Hash::make($request->input("password")),
         ]);
 
+        //----------Asignar rol a usuario ----------------- //
         $us = DB::table('users')->where('email', $request->input("email"))->first();
 
         $user_rol = new user_rol;
@@ -82,6 +88,16 @@ class userController extends AppBaseController
         $user_rol->idRol = $request->input("rol");
 
         $user_rol->save();
+
+        //----------Asignar bodega a usuario ----------------- //
+
+        $sadmin_bodeguero = new sadmin_bodeguero;
+
+        $sadmin_bodeguero->idSadmin = Auth::user()->id;
+
+        $sadmin_bodeguero->idBodeguero = $us->id;
+
+        $sadmin_bodeguero->save();
 
         Flash::success('User creado correctamente.');
 

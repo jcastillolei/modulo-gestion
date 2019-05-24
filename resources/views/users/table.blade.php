@@ -2,8 +2,8 @@
     <thead>
         <tr>
             <th>Nombre</th>
-        <th>Correo</th>
-        <th>Contraseña</th>
+            <th>Correo</th>
+            <th>Contraseña</th>
             <th colspan="3">Accion</th>
         </tr>
     </thead>

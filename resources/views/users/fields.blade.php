@@ -10,9 +10,16 @@
     {!! Form::email('email', null, ['class' => 'form-control']) !!}
 </div>
 
+<!-- Rol Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('role', 'Rol:') !!}
 	{!! Form::select('rol', $roles, null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Bodega Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('bode', 'Bodega:') !!}
+    {!! Form::select('bod', $bodegas, null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Password Field -->
