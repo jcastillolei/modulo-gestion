@@ -235,6 +235,7 @@ return [
         'Html'      => Collective\Html\HtmlFacade::class,
         'Flash'     => Laracasts\Flash\Flash::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Collection' => Illuminate\Database\Eloquent\Collection::class,
 
     ],
 

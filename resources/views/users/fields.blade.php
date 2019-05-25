@@ -11,10 +11,23 @@
 </div>
 
 <!-- Rol Field -->
-<div class="form-group col-sm-6">
-	{!! Form::label('role', 'Rol:') !!}
-	{!! Form::select('rol', $roles, null, ['class' => 'form-control']) !!}
-</div>
+@if(Auth::user()->rol==2)
+    <div class="form-group col-sm-6">
+        {!! Form::label('role', 'Rol:') !!}
+        {!! Form::select('rol', $roles, 3, ['class' => 'form-control','disabled']) !!}
+    </div>
+@elseif(Auth::user()->rol==3)
+    <div class="form-group col-sm-6">
+        {!! Form::label('role', 'Rol:') !!}
+        {!! Form::select('rol', $roles, null, ['class' => 'form-control']) !!}
+    </div>
+@else
+    <div class="form-group col-sm-6">
+        {!! Form::label('role', 'Rol:') !!}
+        {!! Form::select('rol', $roles, null, ['class' => 'form-control']) !!}
+    </div>
+@endif
+
 
 <!-- Bodega Field -->
 <div class="form-group col-sm-6">

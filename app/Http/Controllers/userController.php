@@ -21,6 +21,8 @@ use App\Models\sadmin_bodeguero;
 
 use Illuminate\Support\Facades\Hash;
 
+use Illuminate\Support\Collection;
+
 
 class userController extends AppBaseController
 {
@@ -41,12 +43,45 @@ class userController extends AppBaseController
      */
     public function index(Request $request)
     {
+
         $users = User::paginate(15);
 
-        $roles = roles::pluck('nombre','id');
+        $usuarios = new Collection();
+
+        if (Auth::user()->rol==2) {
+
+            $bodegueros = DB::table('sadmin_bodeguero')->where('idSadmin', Auth::user()->id)->get();
+       
+            foreach ($bodegueros as $bod) {
+
+                foreach ($users as $us) {
+                    
+                    if ($bod->idBodeguero == $us->id) {
+                        $usuarios->push($us);
+                    }
+
+                }
+
+            }
+
+            $sadm = DB::table('users')->where('id', Auth::user()->id)->first();
+
+            $usuarios->push($sadm);
+
+            
+        }
+        else if (Auth::user()->rol==3) 
+        {
+            
+        }
+        else if (Auth::user()->rol==1) {
+
+            $usuarios = $users;
+
+        }       
 
         return view('users.index', compact('roles'))
-            ->with('users', $users);
+            ->with('users', $usuarios);
     }
 
     /**
@@ -57,6 +92,7 @@ class userController extends AppBaseController
     public function create()
     {
         $roles = roles::pluck('nombre','id');
+        //$roles = DB::table('roles')->where('cod', '3')->pluck('nombre','cod');
         $bodegas = locations::pluck('location_name','loc_code');
 
         return view('users.create', compact('roles'))->with('bodegas', $bodegas);
@@ -77,6 +113,7 @@ class userController extends AppBaseController
             'name' => $request->input("name"),
             'email' => $request->input("email"),
             'password' => Hash::make($request->input("password")),
+            'rol' => $request->input("rol"),
         ]);
 
         //----------Asignar rol a usuario ----------------- //
@@ -151,6 +188,7 @@ class userController extends AppBaseController
         }
 
         $roles = roles::pluck('nombre','id');
+        $bodegas = locations::pluck('location_name','loc_code');
 
         return view('users.edit', compact('roles'))->with('user', $user);
     }
