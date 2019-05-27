@@ -93,7 +93,22 @@ class userController extends AppBaseController
     {
         $roles = roles::pluck('nombre','id');
         //$roles = DB::table('roles')->where('cod', '3')->pluck('nombre','cod');
-        $bodegas = locations::pluck('location_name','loc_code');
+        $bods = DB::table('0_locations')->get();
+
+        $bodegasUsuario = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
+
+        $bd = new Collection();
+
+        foreach ($bodegasUsuario as $b) {
+            foreach ($bods as $bo) {
+                if ($b->idBodega == $bo->loc_code) {
+                    echo $b->idBodega;
+                    $bd->push($bo);
+                }
+            }
+        }
+
+        $bodegas = $bd->pluck('location_name','loc_code');
 
         return view('users.create', compact('roles'))->with('bodegas', $bodegas);
     }

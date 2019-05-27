@@ -16,6 +16,9 @@ use App\Models\log;
 use Illuminate\Support\Collection;
 use App\Models\usuario_bodega;
 
+use Illuminate\Support\Facades\Auth;
+use DB;
+
 class usuario_bodegaController extends AppBaseController
 {
     /** @var  usuario_bodegaRepository */
@@ -35,10 +38,39 @@ class usuario_bodegaController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $usuarioBodegas = usuario_bodega::paginate(15);;
+        $usuarioBodegas = usuario_bodega::paginate(15);
+
+        $usuarios = new Collection();
+
+        if (Auth::user()->rol==2) {
+
+            $bodegueros = DB::table('sadmin_bodeguero')->where('idSadmin', Auth::user()->id)->get();
+       
+            foreach ($bodegueros as $bod) {
+                    
+                foreach ($usuarioBodegas as $us) {
+                    if ($bod->idBodeguero == $us->idUsuario) {
+                           
+                        $usuarios->push($us);
+                    }
+
+                }
+
+            }
+            
+        }
+        else if (Auth::user()->rol==3) 
+        {
+            
+        }
+        else if (Auth::user()->rol==1) {
+
+            $usuarios = $usuarioBodegas;
+
+        }
 
         return view('usuario_bodegas.index')
-            ->with('usuarioBodegas', $usuarioBodegas);
+            ->with('usuarioBodegas', $usuarios);
     }
 
     /**
@@ -48,8 +80,60 @@ class usuario_bodegaController extends AppBaseController
      */
     public function create()
     {
-        $usuarios = User::pluck('name','id');
-        $bodegas = locations::pluck('location_name','loc_code');
+
+        if (Auth::user()->rol==2) {
+
+        //----------Bodegas asignadas al sub admin -----------//
+            $bods = DB::table('0_locations')->get();
+
+            $bodegasUsuario = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
+
+            $bd = new Collection();
+
+            foreach ($bodegasUsuario as $b) {
+                foreach ($bods as $bo) {
+                    if ($b->idBodega == $bo->loc_code) {
+                        echo $b->idBodega;
+                        $bd->push($bo);
+                    }
+                }
+            }
+
+            $bodegas = $bd->pluck('location_name','loc_code');
+
+        //----------Bodegueros a cargo del sub admin -----------//
+
+            $bodegueros = DB::table('sadmin_bodeguero')->where('idSadmin', Auth::user()->id)->get();
+
+            $us = DB::table('users')->get();
+
+            $users = new Collection();
+           
+            foreach ($bodegueros as $bod) {
+                    
+                foreach ($us as $u) {
+                    if ($bod->idBodeguero == $u->id) {
+                           
+                        $users->push($u);
+                    }
+
+                }
+
+            }
+
+            $usuarios = $users->pluck('name','id');
+            
+        }
+        else if (Auth::user()->rol==3) 
+        {
+            
+        }
+        else if (Auth::user()->rol==1) {
+
+            $usuarios = $us->pluck('name','id');
+            $bodegas = $bods->pluck('location_name','loc_code');
+
+        }
 
         return view('usuario_bodegas.create', compact('usuarios','bodegas'));
     }

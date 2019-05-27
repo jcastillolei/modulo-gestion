@@ -45,4 +45,3 @@
     @endforeach
     </tbody>
 </table>
-<div align="center">{{ $usuarioBodegas->links() }}</div>
