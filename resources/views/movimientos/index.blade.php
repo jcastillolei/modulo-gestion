@@ -25,11 +25,19 @@
                     	{!! Form::open(['route' => 'movimientos.store']) !!}
 	                        @if (empty($est))
 	                            <tr>
-	                                <td>
+		                            <td>
 	                                    {!! Form::select('idBodegaOrigen', $bodegas, 0, ['class' => 'form-control', 'required']) !!}
 	                                </td>
 	                                <td>
-	                                    {!! Form::select('idUsuario', $usuarios, 0, ['class' => 'form-control', 'required']) !!}
+	                                    
+	                                    <select name="idUsuario" id="idUsuario" class="form-control">
+										     <option value="">Seleccione Usuario</option>
+										     @foreach($usuarios as $usu)
+										     	<option value="{!! $usu->id !!}">
+										     		{!! $usu->id !!} {!! $usu->nombre !!} {!! $usu->apellido !!}
+										     	</option>
+										     @endforeach
+									    </select>
 	                                </td>  
 	                                <td>
 	                                    {!! Form::select('accion',array('1' => 'Despacho', '2' => 'Devolucion'), null, ['class' => 'form-control', 'required']) !!}
@@ -122,4 +130,7 @@
         
         </div>
     </div>
+@endsection
+
+@section('scripts')
 @endsection

@@ -42,8 +42,7 @@
 
 <!-- Estado Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('estado', 'Estado:') !!}
-    {!! Form::number('estado', 1, ['class' => 'form-control']) !!}
+    {{ Form::hidden('estado', 1) }}
 </div>
 
 

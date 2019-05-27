@@ -1,26 +1,33 @@
 <table class="table table-responsive" id="usuarioNormals-table">
     <thead>
         <tr>
+            <th>Bodega</th>
             <th>Id</th>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>Cargo</th>
-        <th>Correo</th>
-        <th>Telefono</th>
-        <th>Estado</th>
-            <th colspan="3">Action</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Cargo</th>
+            <th>Correo</th>
+            <th>Telefono</th>
+            <th colspan="3">Accion</th>
         </tr>
     </thead>
     <tbody>
     @foreach($usuarioNormals as $usuarioNormal)
         <tr>
+            <td>
+                @php
+                    $bod = DB::table('bodega_usuarionormal')
+                   ->where('idUsuarioNormall',$usuarioNormal->id)
+                    ->first();
+                    echo $bod->codBodega;
+                @endphp
+            </td>
             <td>{!! $usuarioNormal->id !!}</td>
             <td>{!! $usuarioNormal->nombre !!}</td>
             <td>{!! $usuarioNormal->apellido !!}</td>
             <td>{!! $usuarioNormal->cargo !!}</td>
             <td>{!! $usuarioNormal->correo !!}</td>
             <td>{!! $usuarioNormal->telefono !!}</td>
-            <td>{!! $usuarioNormal->estado !!}</td>
             <td>
                 {!! Form::open(['route' => ['usuarioNormals.destroy', $usuarioNormal->id], 'method' => 'delete']) !!}
                 <div class='btn-group'>
@@ -34,4 +41,3 @@
     @endforeach
     </tbody>
 </table>
-<div align="center">{{ $usuarioNormals->links() }}</div>

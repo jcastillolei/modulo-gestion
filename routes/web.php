@@ -102,3 +102,5 @@ Route::resource('userRols', 'user_rolController');
 Route::resource('bodegaUsuarionormals', 'bodega_usuarionormalController');
 
 Route::resource('sadminBodegueros', 'sadmin_bodegueroController');
+
+Route::get('/usuBodega','movimientosController@getUsers');

@@ -32,6 +32,8 @@ use Dompdf\Dompdf;
 use App\Models\log;
 use Illuminate\Support\Collection;
 
+use Illuminate\Support\Facades\Auth;
+
 class ReporteInvController extends Controller
 {
     /** @var  ItemBodegaRepository */
@@ -103,13 +105,10 @@ class ReporteInvController extends Controller
         {   
             Session::forget('itemsBodega');
             
-
             $itemsBodega = DB::table('0_loc_stock')
                 ->where('loc_code', '=', $idBod)
                 ->where('stock_id', '=', $idItem)
                 ->get();
-
-                
 
             Session::put('itemsBodega',$itemsBodega);
 
@@ -124,7 +123,8 @@ class ReporteInvController extends Controller
 
             Session::put('itemsBodega',$itemsBodega);
 
-        }elseif (empty($idBod) && !empty($idItem))
+        }
+        elseif (empty($idBod) && !empty($idItem))
         {   
             Session::forget('itemsBodega');
             
@@ -134,14 +134,52 @@ class ReporteInvController extends Controller
 
             Session::put('itemsBodega',$itemsBodega);
 
-        }elseif (empty($idBod) && empty($idItem))
+        }
+        elseif (empty($idBod) && empty($idItem))
         {   
             Session::forget('itemsBodega');
             
-            $itemsBodega = DB::table('0_loc_stock')
+            if (Auth::user()->rol==2) {
+            //----------Bodegas asignadas al sub admin -----------//
+                $bods = DB::table('0_locations')->get();
+
+                $bodegasUsuario = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
+
+                $bd = new Collection();
+
+                foreach ($bodegasUsuario as $b) {
+                    foreach ($bods as $bo) {
+                        if ($b->idBodega == $bo->loc_code) {
+                            echo $b->idBodega;
+                            $bd->push($bo);
+                        }
+                    }
+                }
+
+                $itms = new Collection();
+
+                $items = DB::table('0_loc_stock')
                 ->get();
 
-            Session::put('itemsBodega',$itemsBodega);
+                foreach ($bd as $bodeg) {
+                    foreach ($items as $i) {
+                        if ($bodeg->loc_code == $i->loc_code) {
+                            $itms->push($i);
+                        }
+                    }
+                }
+
+                $itemsBodega = $itms; 
+            }
+            else if (Auth::user()->rol==3) 
+            {
+                
+            }
+            else if (Auth::user()->rol==1) {
+                $itemsBodega = DB::table('0_loc_stock')
+                ->get();
+            }  
+            
 
         }
         
