@@ -28,29 +28,37 @@
 
                             <tr>
                                 <td>
-                                    {!! Form::select('idBodega', $bodegas, 0, ['class' => 'form-control']) !!}
-                                    </td>
-                                    <td>
-                                        {!! Form::select('idItemBodega', $items, 0, ['class' => 'form-control']) !!}
-                                    </td>
-                                    <td>
-                                        {!! Form::select('idUsuario', $usuarios, 0, ['class' => 'form-control']) !!}
-                                    </td>
-                                    <td>
-                                        {!! Form::date('fecha', null, ['class' => 'form-control','id'=>'email_verified_at']) !!}
-                                    </td>
-                                    
-                                     <td>
-                                        {!! Form::submit('Filtrar', ['class' => 'btn btn-primary']) !!}
+                                
+                                <select name="idBodega" id="idBodega" class="form-control">
+                                     <option value="">Seleccione Bodega</option>
+                                     @foreach($bodegas as $bod)
+                                        <option value="{!! $bod->loc_code !!}">
+                                            {!! $bod->location_name !!}
+                                        </option>
+                                     @endforeach
+                                </select>
+                                </td>
+                                <td>
+                                    {!! Form::select('idItemBodega', $items, 0, ['class' => 'form-control']) !!}
+                                </td>
+                                <td>
+                                    {!! Form::select('idUsuario', $usuarios, 0, ['class' => 'form-control']) !!}
+                                </td>
+                                <td>
+                                    {!! Form::date('fecha', null, ['class' => 'form-control','id'=>'email_verified_at']) !!}
+                                </td>
+                                
+                                 <td>
+                                    {!! Form::submit('Filtrar', ['class' => 'btn btn-primary']) !!}
 
-                                        <a class="btn btn-success" href="
+                                    <a class="btn btn-success" href="
 
-                                            {!! url('exportExcelTran') !!}">    
+                                        {!! url('exportExcelTran') !!}">    
 
-                                            Descargar Excel
-                                        </a>
-                                    </td>
-                                </tr>
+                                        Descargar Excel
+                                    </a>
+                                </td>
+                            </tr>
 
                             {!! Form::close() !!}
                         @else

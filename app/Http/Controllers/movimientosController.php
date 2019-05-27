@@ -70,7 +70,6 @@ class movimientosController extends Controller
         }
 
         $usuarios = $usuarioNormals;
-        
 
         $items = stock_master::pluck('description','stock_id');
         $items->put('0','Seleccione');

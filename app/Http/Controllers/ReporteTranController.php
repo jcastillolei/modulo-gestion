@@ -41,6 +41,8 @@ use Dompdf\Dompdf;
 use App\Exports\exportTrans;
 use Illuminate\Support\Collection;
 
+use Illuminate\Support\Facades\Auth;
+
 class ReporteTranController extends Controller
 {
 
@@ -61,28 +63,33 @@ class ReporteTranController extends Controller
      */
     public function index(Request $request)
     {
-        $stockMoves = DB::table('transaccions')->paginate(15);
 
-        $bodeg = DB::table('0_locations')
-                ->get();;
+        $stcMov = DB::table('transaccions')->paginate(15);
 
-        $ub = DB::table('usuario_bodegas')
-                ->where('idUsuario', '=', auth()->user()->id)
-                ->get();
+        $bodeg = DB::table('0_locations')->get();
 
-        $bodegas = new Collection([]);
+        $ub = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
+
+        $bodegas = new Collection();
+        $stockMoves = new Collection();
 
         foreach ($bodeg as $b) {
             foreach ($ub as $u) 
             {
                 if ($b->loc_code == $u->idBodega) 
                 {
-                    $bodegas->put($b->loc_code, $b->location_name); 
+                    $bodegas->push($b); 
                 } 
             }            
         }
 
-        $bodegas->put('0','Seleccione');
+        foreach ($bodegas as $b) {
+            foreach ($stcMov as $sm) {
+                if ($sm->Bodega == $b->loc_code) {
+                    $stockMoves->push($sm);
+                }
+            }
+        }
 
         $usuarios = User::pluck('name','id');
         $usuarios->put('0','Seleccione');
@@ -201,9 +208,7 @@ class ReporteTranController extends Controller
                 ->where('Item', '=', $idItm)
                 ->where('fecha', '=', $fecha)
                 ->get();
-        }
-
-        
+        }    
 
         elseif (!empty($idBod)) 
         {
@@ -231,14 +236,53 @@ class ReporteTranController extends Controller
         }
         elseif (empty($idBod) && empty($fecha) && empty($idItm) && empty($idUsuario)) 
         {
-            $transaccions = DB::table('transaccions')
-                ->get();
+            if (Auth::user()->rol == 2) {
+                $stcMov = DB::table('transaccions')->paginate(15);
+
+                $bodegs = DB::table('0_locations')->get();
+
+                $ub = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
+
+                $bodegas = new Collection();
+                $stockMoves = new Collection();
+
+                foreach ($bodegs as $b) {
+                    foreach ($ub as $u) 
+                    {
+                        if ($b->loc_code == $u->idBodega) 
+                        {
+                            $bodegas->push($b); 
+                        } 
+                    }            
+                }
+
+                foreach ($bodegas as $b) {
+                    foreach ($stcMov as $sm) {
+                        if ($sm->Bodega == $b->loc_code) {
+                            $stockMoves->push($sm);
+                        }
+                    }
+                }
+
+                $transaccions = $stockMoves;
+            }
+            elseif (Auth::user()->rol == 1) 
+            {
+                $transaccions = DB::table('transaccions')->get();
+            }
+            elseif (Auth::user()->rol == 2) {
+                
+            }
+            {
+
+            }
+            
         }
 
             
 
         $bodeg = DB::table('0_locations')
-                ->get();;
+                ->get();
 
         $ub = DB::table('usuario_bodegas')
                 ->where('idUsuario', '=', auth()->user()->id)

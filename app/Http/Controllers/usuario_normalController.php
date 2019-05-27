@@ -53,7 +53,6 @@ class usuario_normalController extends AppBaseController
             foreach ($bodegasUsuario as $b) {
                 foreach ($bods as $bo) {
                     if ($b->idBodega == $bo->loc_code) {
-                        echo $b->idBodega;
                         $bodegas->push($bo);
                     }
                 }
@@ -103,7 +102,6 @@ class usuario_normalController extends AppBaseController
             foreach ($bodegasUsuario as $b) {
                 foreach ($bods as $bo) {
                     if ($b->idBodega == $bo->loc_code) {
-                        echo $b->idBodega;
                         $bd->push($bo);
                     }
                 }
@@ -179,13 +177,30 @@ class usuario_normalController extends AppBaseController
     {
         $usuarioNormal = $this->usuarioNormalRepository->find($id);
 
+    //----------Bodegas asignadas al sub admin -----------//
+        $bods = DB::table('0_locations')->get();
+
+        $bodegasUsuario = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
+
+        $bd = new Collection();
+
+        foreach ($bodegasUsuario as $b) {
+            foreach ($bods as $bo) {
+                if ($b->idBodega == $bo->loc_code) {
+                    $bd->push($bo);
+                }
+            }
+        }
+
+        $bodegas = $bd->pluck('location_name','loc_code');
+
         if (empty($usuarioNormal)) {
             Flash::error('Usuario Normal not found');
 
             return redirect(route('usuarioNormals.index'));
         }
 
-        return view('usuario_normals.edit')->with('usuarioNormal', $usuarioNormal);
+        return view('usuario_normals.edit', compact('bodegas'))->with('usuarioNormal', $usuarioNormal);
     }
 
     /**

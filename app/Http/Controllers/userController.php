@@ -102,7 +102,6 @@ class userController extends AppBaseController
         foreach ($bodegasUsuario as $b) {
             foreach ($bods as $bo) {
                 if ($b->idBodega == $bo->loc_code) {
-                    echo $b->idBodega;
                     $bd->push($bo);
                 }
             }
@@ -203,9 +202,24 @@ class userController extends AppBaseController
         }
 
         $roles = roles::pluck('nombre','id');
-        $bodegas = locations::pluck('location_name','loc_code');
 
-        return view('users.edit', compact('roles'))->with('user', $user);
+        $bods = DB::table('0_locations')->get();
+
+        $bodegasUsuario = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
+
+        $bd = new Collection();
+
+        foreach ($bodegasUsuario as $b) {
+            foreach ($bods as $bo) {
+                if ($b->idBodega == $bo->loc_code) {
+                    $bd->push($bo);
+                }
+            }
+        }
+
+        $bodegas = $bd->pluck('location_name','loc_code');
+
+        return view('users.edit', compact('roles','bodegas'))->with('user', $user);
     }
 
     /**
