@@ -1,7 +1,6 @@
 <table class="table table-responsive" id="usuarioNormals-table">
     <thead>
         <tr>
-            <th>Bodega</th>
             <th>Id</th>
             <th>Nombre</th>
             <th>Apellido</th>
@@ -14,14 +13,7 @@
     <tbody>
     @foreach($usuarioNormals as $usuarioNormal)
         <tr>
-            <td>
-                @php
-                    $bod = DB::table('bodega_usuarionormal')
-                   ->where('idUsuarioNormall',$usuarioNormal->id)
-                    ->first();
-                    echo $bod->codBodega;
-                @endphp
-            </td>
+
             <td>{!! $usuarioNormal->id !!}</td>
             <td>{!! $usuarioNormal->nombre !!}</td>
             <td>{!! $usuarioNormal->apellido !!}</td>

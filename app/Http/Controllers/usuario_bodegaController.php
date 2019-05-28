@@ -178,8 +178,8 @@ class usuario_bodegaController extends AppBaseController
         }
         else if (Auth::user()->rol==1) {
 
-            $usuarios = $us->pluck('name','id');
-            $bodegas = $bods->pluck('location_name','loc_code');
+            $usuarios = DB::table('users')->pluck('name','id');
+            $bodegas = DB::table('0_locations')->pluck('location_name','loc_code');
 
         }
 

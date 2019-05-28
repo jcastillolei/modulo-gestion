@@ -112,23 +112,28 @@ class userController extends AppBaseController
 
         Session::forget('editando');
 
-        $roles = roles::pluck('nombre','id');
-        //$roles = DB::table('roles')->where('cod', '3')->pluck('nombre','cod');
-        $bods = DB::table('0_locations')->get();
+        if (Auth::user()->rol == 1) {
+            $bodegas = DB::table('0_locations')->pluck('location_name','loc_code');
+        }else{
+            $bods = DB::table('0_locations')->get();
 
-        $bodegasUsuario = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
+            $bodegasUsuario = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
 
-        $bd = new Collection();
+            $bd = new Collection();
 
-        foreach ($bodegasUsuario as $b) {
-            foreach ($bods as $bo) {
-                if ($b->idBodega == $bo->loc_code) {
-                    $bd->push($bo);
+            foreach ($bodegasUsuario as $b) {
+                foreach ($bods as $bo) {
+                    if ($b->idBodega == $bo->loc_code) {
+                        $bd->push($bo);
+                    }
                 }
             }
-        }
 
-        $bodegas = $bd->pluck('location_name','loc_code');
+            $bodegas = $bd->pluck('location_name','loc_code');
+        }
+        $roles = roles::pluck('nombre','id');
+        //$roles = DB::table('roles')->where('cod', '3')->pluck('nombre','cod');
+        
 
         return view('users.create', compact('roles'))->with('bodegas', $bodegas);
     }

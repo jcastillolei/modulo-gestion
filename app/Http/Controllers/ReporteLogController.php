@@ -47,7 +47,7 @@ class ReporteLogController extends Controller
      */
     public function index(Request $request)
     {
-        $logs = DB::table('logs')->paginate(15);
+        $logs = DB::table('logs')->paginate(30);
 
         $usuarios = User::pluck('name','id');
         $usuarios->put('0','Seleccione');
@@ -78,19 +78,19 @@ class ReporteLogController extends Controller
             $logs = DB::table('logs')
                 ->where('usuarioLog', '=', $idUsu)
                 ->where('fecha', '=', $fecha)
-                ->get();
+                ->paginate(30);
         }
         elseif ($idUsu==0 && $fecha==0)
         {
              $logs = DB::table('logs')
-                ->get();
+                ->paginate(30);
 
         }
         elseif ($idUsu!=0 && $fecha==0) 
         {
             $logs = DB::table('logs')
                 ->where('usuarioLog', '=', $idUsu)
-                ->get();
+                ->paginate(30);
 
         }
         elseif ($idUsu==0 && $fecha!=0) 
@@ -98,7 +98,7 @@ class ReporteLogController extends Controller
             $fecha = date('d-m-Y',strtotime($request->input("fecha")));
             $logs = DB::table('logs')
                 ->where('fecha', '=', $fecha)
-                ->get();
+                ->paginate(30);
         }
 
         $est=1;

@@ -10,9 +10,8 @@
         <tr>
             <td>{!! $log->descripcion !!}</td>
             <td>{!! $log->fecha !!}</td>
-
         </tr>
     @endforeach
     </tbody>
 </table>
-<div align="center">{{ $logs->links() }}</div>
+
