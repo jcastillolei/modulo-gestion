@@ -14,6 +14,8 @@ use App\Models\roles;
 use App\Models\Locations;
 use App\Models\user_rol;
 use App\User;
+use Session;
+
 use DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -72,7 +74,23 @@ class userController extends AppBaseController
         }
         else if (Auth::user()->rol==3) 
         {
-            
+            $bodegueros = DB::table('sadmin_bodeguero')->where('idSadmin', Auth::user()->id)->get();
+       
+            foreach ($bodegueros as $bod) {
+
+                foreach ($users as $us) {
+                    
+                    if ($bod->idBodeguero == $us->id) {
+                        $usuarios->push($us);
+                    }
+
+                }
+
+            }
+
+            $sadm = DB::table('users')->where('id', Auth::user()->id)->first();
+
+            $usuarios->push($sadm);
         }
         else if (Auth::user()->rol==1) {
 
@@ -91,6 +109,9 @@ class userController extends AppBaseController
      */
     public function create()
     {
+
+        Session::forget('editando');
+
         $roles = roles::pluck('nombre','id');
         //$roles = DB::table('roles')->where('cod', '3')->pluck('nombre','cod');
         $bods = DB::table('0_locations')->get();
@@ -219,6 +240,9 @@ class userController extends AppBaseController
 
         $bodegas = $bd->pluck('location_name','loc_code');
 
+
+        Session::put('editando','true');
+
         return view('users.edit', compact('roles','bodegas'))->with('user', $user);
     }
 
@@ -243,12 +267,8 @@ class userController extends AppBaseController
 
         $user->save();
 
-        if (empty($user)) {
-            Flash::error('User not found');
 
-            return redirect(route('users.index'));
-        }
-
+    //------------------------------------------------------------------------------------------------//
         
 
         Flash::success('User actualizado correctamente.');

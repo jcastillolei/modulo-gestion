@@ -57,23 +57,27 @@ class ReporteInvController extends Controller
 
         Session::forget('itemsBodega');
 
-        $bodeg = DB::table('0_locations')
+        if (Auth::user()->rol == 1) {
+            $bodegas = locations::pluck('location_name','loc_code');
+        }else{
+            $bodeg = DB::table('0_locations')
                 ->get();;
 
-        $ub = DB::table('usuario_bodegas')
-                ->where('idUsuario', '=', auth()->user()->id)
-                ->get();
+            $ub = DB::table('usuario_bodegas')
+                    ->where('idUsuario', '=', auth()->user()->id)
+                    ->get();
 
-        $bodegas = new Collection([]);
+            $bodegas = new Collection([]);
 
-        foreach ($bodeg as $b) {
-            foreach ($ub as $u) 
-            {
-                if ($b->loc_code == $u->idBodega) 
+            foreach ($bodeg as $b) {
+                foreach ($ub as $u) 
                 {
-                    $bodegas->put($b->loc_code, $b->location_name); 
-                } 
-            }            
+                    if ($b->loc_code == $u->idBodega) 
+                    {
+                        $bodegas->put($b->loc_code, $b->location_name); 
+                    } 
+                }            
+            }
         }
 
         $bodegas->put('0','Seleccione');
@@ -173,7 +177,36 @@ class ReporteInvController extends Controller
             }
             else if (Auth::user()->rol==3) 
             {
-                
+            //----------Bodegas asignadas al sub admin -----------//
+                $bods = DB::table('0_locations')->get();
+
+                $bodegasUsuario = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
+
+                $bd = new Collection();
+
+                foreach ($bodegasUsuario as $b) {
+                    foreach ($bods as $bo) {
+                        if ($b->idBodega == $bo->loc_code) {
+                            echo $b->idBodega;
+                            $bd->push($bo);
+                        }
+                    }
+                }
+
+                $itms = new Collection();
+
+                $items = DB::table('0_loc_stock')
+                ->get();
+
+                foreach ($bd as $bodeg) {
+                    foreach ($items as $i) {
+                        if ($bodeg->loc_code == $i->loc_code) {
+                            $itms->push($i);
+                        }
+                    }
+                }
+
+                $itemsBodega = $itms;    
             }
             else if (Auth::user()->rol==1) {
                 $itemsBodega = DB::table('0_loc_stock')

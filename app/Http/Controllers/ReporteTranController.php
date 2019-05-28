@@ -64,33 +64,38 @@ class ReporteTranController extends Controller
     public function index(Request $request)
     {
 
-        $stcMov = DB::table('transaccions')->paginate(15);
+        if (Auth::user()->rol == 1) {
+            $stockMoves = DB::table('transaccions')->get();
+            $bodegas = DB::table('0_locations')->get();
+        }else{
+            $stcMov = DB::table('transaccions')->paginate(15);
 
-        $bodeg = DB::table('0_locations')->get();
+            $bodeg = DB::table('0_locations')->get();
 
-        $ub = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
+            $ub = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
 
-        $bodegas = new Collection();
-        $stockMoves = new Collection();
+            $bodegas = new Collection();
+            $stockMoves = new Collection();
 
-        foreach ($bodeg as $b) {
-            foreach ($ub as $u) 
-            {
-                if ($b->loc_code == $u->idBodega) 
+            foreach ($bodeg as $b) {
+                foreach ($ub as $u) 
                 {
-                    $bodegas->push($b); 
-                } 
-            }            
-        }
+                    if ($b->loc_code == $u->idBodega) 
+                    {
+                        $bodegas->push($b); 
+                    } 
+                }            
+            }
 
-        foreach ($bodegas as $b) {
-            foreach ($stcMov as $sm) {
-                if ($sm->Bodega == $b->loc_code) {
-                    $stockMoves->push($sm);
+            foreach ($bodegas as $b) {
+                foreach ($stcMov as $sm) {
+                    if ($sm->Bodega == $b->loc_code) {
+                        $stockMoves->push($sm);
+                    }
                 }
             }
         }
-
+        
         $usuarios = User::pluck('name','id');
         $usuarios->put('0','Seleccione');
         $items = stock_master::pluck('description','stock_id');
@@ -270,13 +275,36 @@ class ReporteTranController extends Controller
             {
                 $transaccions = DB::table('transaccions')->get();
             }
-            elseif (Auth::user()->rol == 2) {
-                
-            }
-            {
+            elseif (Auth::user()->rol == 3) {
+                $stcMov = DB::table('transaccions')->paginate(15);
 
-            }
-            
+                $bodegs = DB::table('0_locations')->get();
+
+                $ub = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
+
+                $bodegas = new Collection();
+                $stockMoves = new Collection();
+
+                foreach ($bodegs as $b) {
+                    foreach ($ub as $u) 
+                    {
+                        if ($b->loc_code == $u->idBodega) 
+                        {
+                            $bodegas->push($b); 
+                        } 
+                    }            
+                }
+
+                foreach ($bodegas as $b) {
+                    foreach ($stcMov as $sm) {
+                        if ($sm->Bodega == $b->loc_code) {
+                            $stockMoves->push($sm);
+                        }
+                    }
+                }
+
+                $transaccions = $stockMoves;
+            } 
         }
 
             

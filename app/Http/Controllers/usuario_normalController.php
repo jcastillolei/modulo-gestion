@@ -73,7 +73,32 @@ class usuario_normalController extends AppBaseController
         }
         else if (Auth::user()->rol==3) 
         {
-            
+            //----------Bodegas asignadas al sub admin -----------//
+            $bods = DB::table('0_locations')->get();
+
+            $bodegasUsuario = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
+
+            $bodegas = new Collection();
+
+            foreach ($bodegasUsuario as $b) {
+                foreach ($bods as $bo) {
+                    if ($b->idBodega == $bo->loc_code) {
+                        $bodegas->push($bo);
+                    }
+                }
+            }
+
+            //----------Usuarios normales y sus bodegas -----------//
+            $bodUsNor = DB::table('bodega_usuarionormal')->get();
+
+            foreach ($bodegas as $b) {
+                foreach ($bodUsNor as $bo) {
+                    if ($b->loc_code == $bo->codBodega) {
+                        $user = DB::table('usuario_normals')->where('id', $bo->idUsuarioNormall)->first();
+                        $usuarioNormals->push($user);
+                    }
+                }
+            }
         }
         else if (Auth::user()->rol==1) {
 
@@ -221,7 +246,22 @@ class usuario_normalController extends AppBaseController
             return redirect(route('usuarioNormals.index'));
         }
 
-        $usuarioNormal = $this->usuarioNormalRepository->update($request->all(), $id);
+        $usuarioNormal->nombre=$request->input("nombre");
+        $usuarioNormal->apellido=$request->input("apellido");
+        $usuarioNormal->cargo=$request->input("cargo");
+        $usuarioNormal->correo=$request->input("correo");
+        $usuarioNormal->telefono=$request->input("telefono");
+
+        $usuarioNormal->save();
+
+    //------------------------------------------------------------------------------------------//
+        $usuN = DB::table('usuario_normals')->where('correo', $request->input("correo"))->first();
+
+        $userBodega = DB::table('bodega_usuarionormal')->where('idUsuarioNormall', $usuN->id)->first();
+
+        DB::table('bodega_usuarionormal')
+            ->where('idUsuarioNormall', $usuN->id)
+            ->update(['codBodega' => $request->input("bod")]);
 
         Flash::success('Usuario Normal actualizado correctamente.');
 

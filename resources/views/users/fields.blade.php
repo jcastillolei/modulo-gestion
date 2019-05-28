@@ -19,7 +19,7 @@
 @elseif(Auth::user()->rol==3)
     <div class="form-group col-sm-6">
         {!! Form::label('role', 'Rol:') !!}
-        {!! Form::select('rol', $roles, null, ['class' => 'form-control']) !!}
+        {!! Form::select('rol', $roles, 3, ['class' => 'form-control','disabled']) !!}
     </div>
 @else
     <div class="form-group col-sm-6">
@@ -30,10 +30,16 @@
 
 
 <!-- Bodega Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('bode', 'Bodega:') !!}
-    {!! Form::select('bod', $bodegas, null, ['class' => 'form-control']) !!}
-</div>
+@if(Session::get('editando')!='true')
+    <div class="form-group col-sm-6">
+        {!!  Form::label('bode', 'Bodega:') !!}
+        {!! Form::select('bod', $bodegas, null, ['class' => 'form-control']) !!}
+    </div>
+@else
+    
+@endif
+
+
 
 <!-- Password Field -->
 <div class="form-group col-sm-6">
