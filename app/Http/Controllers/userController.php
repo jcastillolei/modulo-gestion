@@ -149,6 +149,8 @@ class userController extends AppBaseController
     {
         $input = $request->all();
 
+       
+
         $user = User::create([
             'name' => $request->input("name"),
             'email' => $request->input("email"),
@@ -166,7 +168,7 @@ class userController extends AppBaseController
 
         $user_rol->save();
 
-        //----------Asignar bodega a usuario ----------------- //
+        //----------Asignar subadmin a bodeguero a usuario ----------------- //
 
         $sadmin_bodeguero = new sadmin_bodeguero;
 
@@ -267,11 +269,16 @@ class userController extends AppBaseController
 
         $user->name=$request->input("name");
         $user->email=$request->input("email");
-        
+        $user->rol=$request->input("rol");
         $user->password=Hash::make($request->input("password"));
 
         $user->save();
 
+        //------------------Modificar user_rol---------------------------//
+
+        DB::table('user_rol')
+            ->where('idUser', $id)
+            ->update(['idRol' => $request->input("rol")]);
 
     //------------------------------------------------------------------------------------------------//
         

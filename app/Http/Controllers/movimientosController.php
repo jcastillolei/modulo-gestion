@@ -34,42 +34,50 @@ class movimientosController extends Controller
      */
     public function index()
     {
-//--------------Bodegas permitidas al sub admin -------------//
-        $bods = DB::table('0_locations')->get();
+        if (Auth::user()->rol == 1) {
+            $usuarios = DB::table('usuario_normals')->get();
+            $bd = DB::table('0_locations')->get();
+        }
+        else
+        {
+    //--------------Bodegas permitidas al sub admin -------------//
+            $bods = DB::table('0_locations')->get();
 
-        $bodegasUsuario = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
+            $bodegasUsuario = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
 
-        $bd = new Collection();
+            $bd = new Collection();
 
-        foreach ($bodegasUsuario as $b) {
-            foreach ($bods as $bo) {
-                if ($b->idBodega == $bo->loc_code) {
-                    
-                    $bd->push($bo);
+            foreach ($bodegasUsuario as $b) {
+                foreach ($bods as $bo) {
+                    if ($b->idBodega == $bo->loc_code) {
+                        
+                        $bd->push($bo);
+                    }
                 }
             }
+
+    //--------------Usuarios normales y sus bodegas -------------//
+
+            $bodUsNor = DB::table('bodega_usuarionormal')->get();
+            $usuarioNormals = new Collection();
+
+            foreach ($bd as $b) {
+                foreach ($bodUsNor as $bo) {
+                    if ($b->loc_code == $bo->codBodega) {
+                        $user = DB::table('usuario_normals')->where('id', $bo->idUsuarioNormall)->first();
+                        $usuarioNormals->push($user);
+                    }
+                }
+            }
+
+            $usuarios = $usuarioNormals;
         }
+
 
         $bodegas = new Collection();
         
         $bodegas = $bd->pluck('location_name','loc_code');
         $bodegas->put('0','Seleccione');
-
-//--------------Usuarios normales y sus bodegas -------------//
-
-        $bodUsNor = DB::table('bodega_usuarionormal')->get();
-        $usuarioNormals = new Collection();
-
-        foreach ($bd as $b) {
-            foreach ($bodUsNor as $bo) {
-                if ($b->loc_code == $bo->codBodega) {
-                    $user = DB::table('usuario_normals')->where('id', $bo->idUsuarioNormall)->first();
-                    $usuarioNormals->push($user);
-                }
-            }
-        }
-
-        $usuarios = $usuarioNormals;
 
         $items = stock_master::pluck('description','stock_id');
         $items->put('0','Seleccione');
