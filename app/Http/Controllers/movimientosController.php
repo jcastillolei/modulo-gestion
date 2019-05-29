@@ -143,28 +143,42 @@ class movimientosController extends Controller
 
                     Flash::error('Debes seleccionar bodega y usuario.');
 
-                    $bodeg = DB::table('0_locations')
-                            ->get();;
+                    //--------------Bodegas permitidas al sub admin -------------//
+                    $bods = DB::table('0_locations')->get();
 
-                    $ub = DB::table('usuario_bodegas')
-                            ->where('idUsuario', '=', auth()->user()->id)
-                            ->get();
+                    $bodegasUsuario = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
 
-                    $bodegas = new Collection([]);
+                    $bd = new Collection();
 
-                    foreach ($bodeg as $b) {
-                        foreach ($ub as $u) 
-                        {
-                            if ($b->loc_code == $u->idBodega) 
-                            {
-                                $bodegas->put($b->loc_code, $b->location_name); 
-                            } 
-                        }            
+                    foreach ($bodegasUsuario as $b) {
+                        foreach ($bods as $bo) {
+                            if ($b->idBodega == $bo->loc_code) { 
+                                $bd->push($bo);
+                            }
+                        }
                     }
 
+                    $bodegas = new Collection();
+
+                    $bodegas = $bd->pluck('location_name','loc_code');
                     $bodegas->put('0','Seleccione');
-                    $usuarios = usuario_normal::pluck('nombre','id');
-                    $usuarios->put('0','Seleccione');
+
+            //--------------Usuarios normales y sus bodegas -------------//
+
+                    $bodUsNor = DB::table('bodega_usuarionormal')->get();
+                    $usuarioNormals = new Collection();
+
+                    foreach ($bd as $b) {
+                        foreach ($bodUsNor as $bo) {
+                            if ($b->loc_code == $bo->codBodega) {
+                                $user = DB::table('usuario_normals')->where('id', $bo->idUsuarioNormall)->first();
+                                $usuarioNormals->push($user);
+                            }
+                        }
+                    }
+
+                    $usuarios = $usuarioNormals;                    
+
                     $items = stock_master::pluck('description','stock_id');
                     $items->put('0','Seleccione');
 
