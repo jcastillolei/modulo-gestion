@@ -35,52 +35,22 @@ class movimientosController extends Controller
     public function index()
     {
         if (Auth::user()->rol == 1) {
+
+            $movimientos = new movimientosController();
+            
             $usuarios = DB::table('usuario_normals')->get();
             $bd = DB::table('0_locations')->get();
+            $bodegas = $bd->pluck('location_name','loc_code');
+            $items = $movimientos->obtenerItems();
         }
         else
         {
-    //--------------Bodegas permitidas al sub admin -------------//
-            $bods = DB::table('0_locations')->get();
 
-            $bodegasUsuario = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
-
-            $bd = new Collection();
-
-            foreach ($bodegasUsuario as $b) {
-                foreach ($bods as $bo) {
-                    if ($b->idBodega == $bo->loc_code) {
-                        
-                        $bd->push($bo);
-                    }
-                }
-            }
-
-    //--------------Usuarios normales y sus bodegas -------------//
-
-            $bodUsNor = DB::table('bodega_usuarionormal')->get();
-            $usuarioNormals = new Collection();
-
-            foreach ($bd as $b) {
-                foreach ($bodUsNor as $bo) {
-                    if ($b->loc_code == $bo->codBodega) {
-                        $user = DB::table('usuario_normals')->where('id', $bo->idUsuarioNormall)->first();
-                        $usuarioNormals->push($user);
-                    }
-                }
-            }
-
-            $usuarios = $usuarioNormals;
+            $movimientos = new movimientosController();
+            $bodegas = $movimientos->obtenerBodegas();
+            $usuarios = $movimientos->obtenerUsuarios();
+            $items = $movimientos->obtenerItems();
         }
-
-
-        $bodegas = new Collection();
-        
-        $bodegas = $bd->pluck('location_name','loc_code');
-        $bodegas->put('0','Seleccione');
-
-        $items = stock_master::pluck('description','stock_id');
-        $items->put('0','Seleccione');
 
         Session::forget('items');
         Session::forget('acci');
@@ -116,8 +86,8 @@ class movimientosController extends Controller
 
         if ($acc=="anadir") {
 
-            $item = $request->input("item");;
-            $cantidad = $request->input("cantidad");;
+            $item = $request->input("item");
+            $cantidad = $request->input("cantidad");
 
 
             Session::push('items', [
@@ -143,45 +113,10 @@ class movimientosController extends Controller
 
                     Flash::error('Debes seleccionar bodega y usuario.');
 
-                    //--------------Bodegas permitidas al sub admin -------------//
-                    $bods = DB::table('0_locations')->get();
-
-                    $bodegasUsuario = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
-
-                    $bd = new Collection();
-
-                    foreach ($bodegasUsuario as $b) {
-                        foreach ($bods as $bo) {
-                            if ($b->idBodega == $bo->loc_code) { 
-                                $bd->push($bo);
-                            }
-                        }
-                    }
-
-                    $bodegas = new Collection();
-
-                    $bodegas = $bd->pluck('location_name','loc_code');
-                    $bodegas->put('0','Seleccione');
-
-            //--------------Usuarios normales y sus bodegas -------------//
-
-                    $bodUsNor = DB::table('bodega_usuarionormal')->get();
-                    $usuarioNormals = new Collection();
-
-                    foreach ($bd as $b) {
-                        foreach ($bodUsNor as $bo) {
-                            if ($b->loc_code == $bo->codBodega) {
-                                $user = DB::table('usuario_normals')->where('id', $bo->idUsuarioNormall)->first();
-                                $usuarioNormals->push($user);
-                            }
-                        }
-                    }
-
-                    $usuarios = $usuarioNormals;                    
-
-                    $items = stock_master::pluck('description','stock_id');
-                    $items->put('0','Seleccione');
-
+                    $movimientos = new movimientosController();
+                    $bodegas = $movimientos->obtenerBodegas();
+                    $usuarios = $movimientos->obtenerUsuarios();
+                    $items = $movimientos->obtenerItems();
 
                     $est=1;
 
@@ -224,31 +159,10 @@ class movimientosController extends Controller
 
                     Flash::error('Debes ingresar items.');
                 
-                    $bodeg = DB::table('0_locations')
-                            ->get();;
-
-                    $ub = DB::table('usuario_bodegas')
-                            ->where('idUsuario', '=', auth()->user()->id)
-                            ->get();
-
-                    $bodegas = new Collection([]);
-
-                    foreach ($bodeg as $b) {
-                        foreach ($ub as $u) 
-                        {
-                            if ($b->loc_code == $u->idBodega) 
-                            {
-                                $bodegas->put($b->loc_code, $b->location_name); 
-                            } 
-                        }            
-                    }
-
-                    $bodegas->put('0','Seleccione');
-                    $usuarios = usuario_normal::pluck('nombre','id');
-                    $usuarios->put('0','Seleccione');
-                    $items = stock_master::pluck('description','stock_id');
-                    $items->put('0','Seleccione');
-
+                    $movimientos = new movimientosController();
+                    $bodegas = $movimientos->obtenerBodegas();
+                    $usuarios = $movimientos->obtenerUsuarios();
+                    $items = $movimientos->obtenerItems();
 
                     $est=1;
 
@@ -265,13 +179,36 @@ class movimientosController extends Controller
 
                 foreach ($itemsLista as $itm) 
                 {
+                    $stock = DB::table('0_stock_moves as s')
+                    ->leftJoin('0_voided as b', 's.type', '=', 'b.type')
+                    ->leftJoin('0_voided as c', 's.trans_no', '=', 'c.id')
+                    ->whereNull('c.id')
+                    ->where('stock_id',$itm['stock_id'])
+                    ->where('tran_date','<=',date('Y-m-d'))
+                    ->where('loc_code',$idBod)
+                    ->sum('qty'); 
+
+                    if ($stock<$itm['cantidad']) {
+
+                        Flash::error('La cantidad de items que deseas transferir no se encuentra disponible.');
+
+                        $movimientos = new movimientosController();
+                        $bodegas = $movimientos->obtenerBodegas();
+                        $usuarios = $movimientos->obtenerUsuarios();
+                        $items = $movimientos->obtenerItems();
+
+                        $est=1;
+
+                        $itemsLista = Session::get('items');
+
+                        return view('movimientos.index', compact('bodegas','usuarios','items','idBod','fecha','idItm','est'))
+                        ->with('itemsLista', $itemsLista);
+                    }
 
                     $ite = DB::table('0_stock_master')->where('stock_id', $itm['stock_id'])->first();
 
                     DB::statement( 'UPDATE 0_stock_master SET material_cost=?
                         WHERE stock_id=?', [$ite->material_cost, $itm['stock_id']]);
-
-
 
                     $stockMove1 = new stock_moves;
 
@@ -514,35 +451,14 @@ class movimientosController extends Controller
                 $repor="true";
 
                 $itemsLista = Session::get('items');
-
-                   
+      
             }
         }
         
-        $bodeg = DB::table('0_locations')
-                ->get();;
-
-        $ub = DB::table('usuario_bodegas')
-                ->where('idUsuario', '=', auth()->user()->id)
-                ->get();
-
-        $bodegas = new Collection([]);
-
-        foreach ($bodeg as $b) {
-            foreach ($ub as $u) 
-            {
-                if ($b->loc_code == $u->idBodega) 
-                {
-                    $bodegas->put($b->loc_code, $b->location_name); 
-                } 
-            }            
-        }
-
-        $bodegas->put('0','Seleccione');
-        $usuarios = usuario_normal::pluck('nombre','id');
-        $usuarios->put('0','Seleccione');
-        $items = stock_master::pluck('description','stock_id');
-        $items->put('0','Seleccione');
+        $movimientos = new movimientosController();
+        $bodegas = $movimientos->obtenerBodegas();
+        $usuarios = $movimientos->obtenerUsuarios();
+        $items = $movimientos->obtenerItems();
 
         $est=1;
 
@@ -661,31 +577,10 @@ class movimientosController extends Controller
 
         Session::forget('items');
 
-        $bodeg = DB::table('0_locations')
-                            ->get();;
-
-        $ub = DB::table('usuario_bodegas')
-                ->where('idUsuario', '=', auth()->user()->id)
-                ->get();
-
-        $bodegas = new Collection([]);
-
-        foreach ($bodeg as $b) {
-            foreach ($ub as $u) 
-            {
-                if ($b->loc_code == $u->idBodega) 
-                {
-                    $bodegas->put($b->loc_code, $b->location_name); 
-                } 
-            }            
-        }
-
-        $bodegas->put('0','Seleccione');
-        $usuarios = usuario_normal::pluck('nombre','id');
-        $usuarios->put('0','Seleccione');
-        $items = stock_master::pluck('description','stock_id');
-        $items->put('0','Seleccione');
-
+        $movimientos = new movimientosController();
+        $bodegas = $movimientos->obtenerBodegas();
+        $usuarios = $movimientos->obtenerUsuarios();
+        $items = $movimientos->obtenerItems();
 
         $est=1;
 
@@ -705,4 +600,72 @@ class movimientosController extends Controller
             return response()->json($usuariosArray);
         }
     }
+
+    public function obtenerBodegas()
+    {
+
+        $bods = DB::table('0_locations')->get();
+
+        $bodegasUsuario = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
+
+        $bd = new Collection();
+
+        foreach ($bodegasUsuario as $b) {
+            foreach ($bods as $bo) {
+                if ($b->idBodega == $bo->loc_code) {
+                    
+                    $bd->push($bo);
+                }
+            }
+        }
+
+        $bodegas = new Collection();
+        
+        $bodegas = $bd->pluck('location_name','loc_code');
+        $bodegas->put('0','Seleccione');
+
+        return $bodegas;
+    }
+    
+    public function obtenerUsuarios()
+    {
+
+        $bods = DB::table('0_locations')->get();
+
+        $bodegasUsuario = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
+
+        $bd = new Collection();
+
+        foreach ($bodegasUsuario as $b) {
+            foreach ($bods as $bo) {
+                if ($b->idBodega == $bo->loc_code) {
+                    
+                    $bd->push($bo);
+                }
+            }
+        }
+
+        $bodUsNor = DB::table('bodega_usuarionormal')->get();
+        $usuarioNormals = new Collection();
+
+        foreach ($bd as $b) {
+            foreach ($bodUsNor as $bo) {
+                if ($b->loc_code == $bo->codBodega) {
+                    $user = DB::table('usuario_normals')->where('id', $bo->idUsuarioNormall)->first();
+                    $usuarioNormals->push($user);
+                }
+            }
+        }
+
+        return $usuarioNormals;
+    }
+
+    public function obtenerItems()
+    {
+        $items = stock_master::pluck('description','stock_id');
+        $items->put('0','Seleccione');
+
+        return $items;
+    }
+
 }

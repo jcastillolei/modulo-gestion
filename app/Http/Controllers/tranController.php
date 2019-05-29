@@ -43,34 +43,12 @@ class tranController extends Controller
      */
     public function index()
     {
-        $bodegas = locations::pluck('location_name','loc_code');
-        $bodeg = DB::table('0_locations')
-                ->get();;
 
-        $ub = DB::table('usuario_bodegas')
-                ->where('idUsuario', '=', auth()->user()->id)
-                ->get();
-
-        $bodegas = new Collection([]);
-
-        foreach ($bodeg as $b) {
-            foreach ($ub as $u) 
-            {
-                if ($b->loc_code == $u->idBodega) 
-                {
-                    $bodegas->put($b->loc_code, $b->location_name); 
-                } 
-            }            
-        }
-
-        $bodegas->put('0','Seleccione');
-        $usuarios = User::pluck('name','id');
-        $usuarios->put('0','Seleccione');
-        $items = stock_master::pluck('description','stock_id');
-        $items->put('0','Seleccione');
+        $tran = new tranController();
+        $bodegas = $tran->obtenerBodegas();
+        $items = $tran->obtenerItems();
 
         Session::forget('items');
-
         $repor = null;
 
         return view('tran.index', compact('bodegas','usuarios','items','repor'));
@@ -121,32 +99,11 @@ class tranController extends Controller
 
                 Flash::error('Debes seleccionar bodegas.');
 
-                $ub = DB::table('usuario_bodegas')
-                ->where('idUsuario', '=', auth()->user()->id)
-                ->get();
-
-                $bodegas = new Collection([]);
-                $bodeg = DB::table('0_locations')
-                ->get();;
-
-                foreach ($bodeg as $b) {
-                    foreach ($ub as $u) 
-                    {
-                        if ($b->loc_code == $u->idBodega) 
-                        {
-                            $bodegas->put($b->loc_code, $b->location_name); 
-                        } 
-                    }            
-                }
-
-                $bodegas->put('0','Seleccione');
-                $usuarios = User::pluck('name','id');
-                $usuarios->put('0','Seleccione');
-                $items = stock_master::pluck('description','stock_id');
-                $items->put('0','Seleccione');
+                $tran = new tranController();
+                $bodegas = $tran->obtenerBodegas();
+                $items = $tran->obtenerItems();
 
                 $itemsLista = Session::get('items');
-
 
                return view('tran.index', compact('bodegas','usuarios','items','idBod','fecha','idItm','est','repor'))
                     ->with('itemsLista', $itemsLista);
@@ -188,30 +145,9 @@ class tranController extends Controller
                 
                 Flash::error('Debes ingresar items.');
 
-                $ub = DB::table('usuario_bodegas')
-                ->where('idUsuario', '=', auth()->user()->id)
-                ->get();
-
-                $bodegas = new Collection([]);
-                $bodeg = DB::table('0_locations')
-                ->get();;
-
-                foreach ($bodeg as $b) {
-                    foreach ($ub as $u) 
-                    {
-                        if ($b->loc_code == $u->idBodega) 
-                        {
-                            $bodegas->put($b->loc_code, $b->location_name); 
-                        } 
-                    }            
-                }
-
-                $bodegas->put('0','Seleccione');
-                $usuarios = User::pluck('name','id');
-                $usuarios->put('0','Seleccione');
-                $items = stock_master::pluck('description','stock_id');
-                $items->put('0','Seleccione');
-
+                $tran = new tranController();
+                $bodegas = $tran->obtenerBodegas();
+                $items = $tran->obtenerItems();
 
                 $est=1;
                return view('tran.index', compact('bodegas','usuarios','items','idBod','fecha','idItm','est','repor'));
@@ -228,36 +164,13 @@ class tranController extends Controller
                     ->where('loc_code',$idBod)
                     ->sum('qty'); 
 
-                echo $stock;
-
                 if ($stock<$itm['cantidad']) {
 
                     Flash::error('La cantidad de items que deseas transferir no se encuentra disponible.');
 
-                    $ub = DB::table('usuario_bodegas')
-                    ->where('idUsuario', '=', auth()->user()->id)
-                    ->get();
-
-                    $bodegas = new Collection([]);
-                    $bodeg = DB::table('0_locations')
-                    ->get();;
-
-                    foreach ($bodeg as $b) {
-                        foreach ($ub as $u) 
-                        {
-                            if ($b->loc_code == $u->idBodega) 
-                            {
-                                $bodegas->put($b->loc_code, $b->location_name); 
-                            } 
-                        }            
-                    }
-
-                    $bodegas->put('0','Seleccione');
-                    $usuarios = User::pluck('name','id');
-                    $usuarios->put('0','Seleccione');
-                    $items = stock_master::pluck('description','stock_id');
-                    $items->put('0','Seleccione');
-
+                    $tran = new tranController();
+                    $bodegas = $tran->obtenerBodegas();
+                    $items = $tran->obtenerItems();
 
                     $est=1;
                    return view('tran.index', compact('bodegas','usuarios','items','idBod','fecha','idItm','est','repor'));
@@ -332,40 +245,14 @@ class tranController extends Controller
                 //----------------------------------------------------------------------
 
                 $repor = "true";
-
-                //DB::statement($consulta);
             }       
         }
 
-        $bodeg = DB::table('0_locations')
-                ->get();;
-
-        $ub = DB::table('usuario_bodegas')
-                ->where('idUsuario', '=', auth()->user()->id)
-                ->get();
-
-        $bodegas = new Collection([]);
-
-        foreach ($bodeg as $b) {
-            foreach ($ub as $u) 
-            {
-                if ($b->loc_code == $u->idBodega) 
-                {
-                    $bodegas->put($b->loc_code, $b->location_name); 
-                } 
-            }            
-        }
-        
-        $bodegas->put('0','Seleccione');
-        $usuarios = User::pluck('name','id');
-        $usuarios->put('0','Seleccione');
-        $items = stock_master::pluck('description','stock_id');
-        $items->put('0','Seleccione');
-
+        $tran = new tranController();
+        $bodegas = $tran->obtenerBodegas();
+        $items = $tran->obtenerItems();
 
         $itemsLista = Session::get('items');
-
-        
 
         $est=1;
        return view('tran.index', compact('bodegas','usuarios','items','idBod','fecha','idItm','est','repor'))
@@ -509,6 +396,43 @@ class tranController extends Controller
             ->with('itemsLista', $itemsLista);
     }
 
+    public function obtenerBodegas() 
+    {
 
+        $bodegas = locations::pluck('location_name','loc_code');
+        $bodeg = DB::table('0_locations')
+                ->get();;
+
+        $ub = DB::table('usuario_bodegas')
+                ->where('idUsuario', '=', auth()->user()->id)
+                ->get();
+
+        $bodegas = new Collection([]);
+
+        foreach ($bodeg as $b) {
+            foreach ($ub as $u) 
+            {
+                if ($b->loc_code == $u->idBodega) 
+                {
+                    $bodegas->put($b->loc_code, $b->location_name); 
+                } 
+            }            
+        }
+
+        $bodegas->put('0','Seleccione');
+
+        return $bodegas;
+    }
+
+    public function obtenerItems() 
+    {
+
+        $items = stock_master::pluck('description','stock_id');
+        $items->put('0','Seleccione');
+
+        return $items;
+    }
+
+    
 
 }

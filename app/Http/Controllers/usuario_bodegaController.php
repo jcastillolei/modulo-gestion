@@ -45,19 +45,15 @@ class usuario_bodegaController extends AppBaseController
         if (Auth::user()->rol==2) {
 
             $bodegueros = DB::table('sadmin_bodeguero')->where('idSadmin', Auth::user()->id)->get();
-       
+            
             foreach ($bodegueros as $bod) {
-                    
                 foreach ($usuarioBodegas as $us) {
+
                     if ($bod->idBodeguero == $us->idUsuario) {
-                           
                         $usuarios->push($us);
                     }
-
                 }
-
             }
-            
         }
         else if (Auth::user()->rol==3) 
         {

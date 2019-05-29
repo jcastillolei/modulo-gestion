@@ -31,7 +31,7 @@
 	                                <td>
 	                                    
 	                                    <select name="idUsuario" id="idUsuario" class="form-control">
-										     <option value="">Seleccione Usuario</option>
+										     <option value="0">Seleccione Usuario</option>
 										     @foreach($usuarios as $usu)
 										     	<option value="{!! $usu->id !!}">
 										     		{!! $usu->id !!} {!! $usu->nombre !!} {!! $usu->apellido !!}
@@ -58,7 +58,7 @@
 	                                </td>
 	                                <td>
 	                                    <select name="idUsuario" id="idUsuario" class="form-control">
-										     <option value="">Seleccione Usuario</option>
+										     <option value="0">Seleccione Usuario</option>
 										     @foreach($usuarios as $usu)
 										     	<option value="{!! $usu->id !!}">
 										     		{!! $usu->id !!} {!! $usu->nombre !!} {!! $usu->apellido !!}

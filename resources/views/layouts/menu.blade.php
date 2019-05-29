@@ -72,6 +72,7 @@
         <a href="{!! route('movimientos.index') !!}"><i class="fa fa-truck"></i><span>Despacho/Devolucion</span></a>
 
     </li>
+
     <li class="{{ Request::is('bodegaUsuarionormals*') ? 'active' : '' }}">
     <a href="{!! route('bodegaUsuarionormals.index') !!}"><i class="fa fa-edit"></i><span>Bodega Usuarionormals</span></a>
     </li>
@@ -80,6 +81,11 @@
         <a href="{!! route('sadminBodegueros.index') !!}"><i class="fa fa-edit"></i><span>Sadmin Bodegueros</span></a>
 
     </li>
+
+@if (!empty(Session::get('estonoexiste')))
+    
+@endif
+    
 
 
 @elseif(!empty(Session::get('rol')) && Session::get('rol') == 3)
@@ -90,10 +96,6 @@
 
     <li class="{{ Request::is('reportss*') ? 'active' : '' }}">
         <a href="{!! route('reportss.index') !!}"><i class="fa fa-edit"></i><span>Item Bodegas</span></a>
-    </li>
-
-    <li class="{{ Request::is('usuarioBodegas*') ? 'active' : '' }}">
-        <a href="{!! route('usuarioBodegas.index') !!}"><i class="fa fa-sitemap"></i><span>Usuario Bodega</span></a>
     </li>
 
     <li class="{{ Request::is('usuarioNormals*') ? 'active' : '' }}">
