@@ -125,189 +125,422 @@ class ReporteTranController extends Controller
                         ->where('id', '=', $idUsuario)
                         ->first();
 
-        //Valida los valores del filtro 
-        if (!empty($idBod) && !empty($fecha) && !empty($idItm) && !empty($idUsuario)) 
+    //--------------------------Si el usuario no es el admin, se crea una tabla temporal en mysql para leer las transacciones de esa bodega, y luego se elimina --------//
+        if (Auth::user()->rol != 1) 
         {
-            $transaccions = DB::table('transaccions')
-                ->where('Bodega', '=', $idBod)
-                ->where('fecha', '=', $fecha)
-                ->where('Item', '=', $idItm)
-                ->where('responsable', '=', $use->name)
-                ->get();
-        }
-        elseif (!empty($idBod) && !empty($fecha) && empty($idItm) && !empty($idUsuario))
-         {
-            $transaccions = DB::table('transaccions')
-                ->where('Bodega', '=', $idBod)
-                ->where('fecha', '=', $fecha)
-                ->where('responsable', '=', $use->name)
-                ->get();
-        }
-        elseif (empty($idBod) && !empty($fecha) && !empty($idItm) && !empty($idUsuario))
-        {
-            $transaccions = DB::table('transaccions')
-                ->where('fecha', '=', $fecha)
-                ->where('Item', '=', $idItm)
-                ->where('responsable', '=', $use->name)
-                ->get();
-        }
-        elseif (!empty($idBod) && empty($fecha) && !empty($idItm) && !empty($idUsuario))
-        {
-            $transaccions = DB::table('transaccions')
-                ->where('Bodega', '=', $idBod)
-                ->where('Item', '=', $idItm)
-                ->where('responsable', '=', $use->name)
-                ->get();
-        }
-        elseif (!empty($idBod) && !empty($fecha) && !empty($idItm) && empty($idUsuario))
-        {
-            $transaccions = DB::table('transaccions')
-                ->where('Bodega', '=', $idBod)
-                ->where('Item', '=', $idItm)
-                ->where('fecha', '=', $fecha)
-                ->get();
-        }
-        //---------------------------------------------------------------------------
+            $stcMov = DB::table('transaccions')->paginate(15);
 
-        elseif (!empty($idBod) && !empty($idItm)) 
-        {
-            $transaccions = DB::table('transaccions')
-                ->where('Bodega', '=', $idBod)
-                ->where('Item', '=', $idItm)
-                ->get();
-        }
-        elseif (!empty($idBod) && !empty($idUsuario)) 
-        {
-            $transaccions = DB::table('transaccions')
-                ->where('Bodega', '=', $idBod)
-                ->where('responsable', '=', $use->name)
-                ->get();
-        }
-        elseif (!empty($idBod) && !empty($fecha)) 
-        {
-            $transaccions = DB::table('transaccions')
-                ->where('Bodega', '=', $idBod)
-                ->where('fecha', '=', $fecha)
-                ->get();
-        }
-        //---------------------------------------------------------------------------
+            $bodeg = DB::table('0_locations')->get();
 
-        elseif (!empty($idUsuario) && !empty($idItm)) 
-        {
-            $transaccions = DB::table('transaccions')
-                ->where('Item', '=', $idItm)
-                ->where('responsable', '=', $use->name)
-                ->get();
-        }
-        elseif (!empty($fecha) && !empty($idItm)) 
-        {
-            $transaccions = DB::table('transaccions')
-                ->where('Item', '=', $idItm)
-                ->where('fecha', '=', $fecha)
-                ->get();
-        }
-        //---------------------------------------------------------------------------
-        elseif (!empty($idUsuario) && !empty($fecha)) 
-        {
-            $transaccions = DB::table('transaccions')
-                ->where('Item', '=', $idItm)
-                ->where('fecha', '=', $fecha)
-                ->get();
-        }    
+            $ub = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
 
-        elseif (!empty($idBod)) 
-        {
-            $transaccions = DB::table('transaccions')
-                ->where('Bodega', '=', $idBod)
-                ->get();
-        }
-        elseif (!empty($idItm)) 
-        {
-            $transaccions = DB::table('transaccions')
-                ->where('Item', '=', $idItm)
-                ->get();
-        }
-        elseif (!empty($fecha)) 
-        {
-            $transaccions = DB::table('transaccions')
-                ->where('fecha', '=', $fecha)
-                ->get();
-        }
-        elseif (!empty($idUsuario)) 
-        {
-            $transaccions = DB::table('transaccions')
-                ->where('responsable', '=', $use->name)
-                ->get();
-        }
-        elseif (empty($idBod) && empty($fecha) && empty($idItm) && empty($idUsuario)) 
-        {
-            if (Auth::user()->rol == 2) {
-                $stcMov = DB::table('transaccions')->paginate(15);
+            $bodegas = new Collection();
+            $stockMoves = new Collection();
 
-                $bodegs = DB::table('0_locations')->get();
-
-                $ub = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
-
-                $bodegas = new Collection();
-                $stockMoves = new Collection();
-
-                foreach ($bodegs as $b) {
-                    foreach ($ub as $u) 
+            foreach ($bodeg as $b) {
+                foreach ($ub as $u) 
+                {
+                    if ($b->loc_code == $u->idBodega) 
                     {
-                        if ($b->loc_code == $u->idBodega) 
-                        {
-                            $bodegas->push($b); 
-                        } 
-                    }            
-                }
+                        $bodegas->push($b); 
+                    } 
+                }            
+            }
 
-                foreach ($bodegas as $b) {
-                    foreach ($stcMov as $sm) {
-                        if ($sm->Bodega == $b->loc_code) {
-                            $stockMoves->push($sm);
-                        }
+            foreach ($bodegas as $b) {
+                foreach ($stcMov as $sm) {
+                    if ($sm->Bodega == $b->loc_code) {
+                        $stockMoves->push($sm);
                     }
                 }
-
-                $transaccions = $stockMoves;
             }
-            elseif (Auth::user()->rol == 1) 
+
+            foreach ($stockMoves as $stm) {
+                DB::table('transacciones_temporal')->insert(
+                    [
+                        'id' => $stm->id, 
+                        'tipoTransaccion' => $stm->tipoTransaccion,
+                        'Bodega' => $stm->Bodega, 
+                        'Item' => $stm->Item,
+                        'UsuarioSolicitud' => $stm->UsuarioSolicitud, 
+                        'cantidad' => $stm->cantidad,
+                        'descripcion' => $stm->descripcion, 
+                        'responsable' => $stm->responsable,
+                        'autorizadoPor' => $stm->autorizadoPor, 
+                        'cargo' => $stm->cargo,
+                        'estado' => $stm->estado, 
+                        'fecha' => $stm->fecha,
+                        'created_at' => $stm->created_at,
+                        'updated_at' => $stm->updated_at, 
+                        'deleted_at' => $stm->deleted_at
+                    ]
+                );
+            }
+
+            //Valida los valores del filtro 
+            if (!empty($idBod) && !empty($fecha) && !empty($idItm) && !empty($idUsuario)) 
             {
-                $transaccions = DB::table('transaccions')->get();
+                $transaccions = DB::table('transacciones_temporal')
+                    ->where('Bodega', '=', $idBod)
+                    ->where('fecha', '=', $fecha)
+                    ->where('Item', '=', $idItm)
+                    ->where('responsable', '=', $use->name)
+                    ->get();
             }
-            elseif (Auth::user()->rol == 3) {
-                $stcMov = DB::table('transaccions')->paginate(15);
+            elseif (!empty($idBod) && !empty($fecha) && empty($idItm) && !empty($idUsuario))
+             {
+                $transaccions = DB::table('transacciones_temporal')
+                    ->where('Bodega', '=', $idBod)
+                    ->where('fecha', '=', $fecha)
+                    ->where('responsable', '=', $use->name)
+                    ->get();
+            }
+            elseif (empty($idBod) && !empty($fecha) && !empty($idItm) && !empty($idUsuario))
+            {
+                $transaccions = DB::table('transacciones_temporal')
+                    ->where('fecha', '=', $fecha)
+                    ->where('Item', '=', $idItm)
+                    ->where('responsable', '=', $use->name)
+                    ->get();
+            }
+            elseif (!empty($idBod) && empty($fecha) && !empty($idItm) && !empty($idUsuario))
+            {
+                $transaccions = DB::table('transacciones_temporal')
+                    ->where('Bodega', '=', $idBod)
+                    ->where('Item', '=', $idItm)
+                    ->where('responsable', '=', $use->name)
+                    ->get();
+            }
+            elseif (!empty($idBod) && !empty($fecha) && !empty($idItm) && empty($idUsuario))
+            {
+                $transaccions = DB::table('transacciones_temporal')
+                    ->where('Bodega', '=', $idBod)
+                    ->where('Item', '=', $idItm)
+                    ->where('fecha', '=', $fecha)
+                    ->get();
+            }
+            //---------------------------------------------------------------------------
 
-                $bodegs = DB::table('0_locations')->get();
+            elseif (!empty($idBod) && !empty($idItm)) 
+            {
+                $transaccions = DB::table('transacciones_temporal')
+                    ->where('Bodega', '=', $idBod)
+                    ->where('Item', '=', $idItm)
+                    ->get();
+            }
+            elseif (!empty($idBod) && !empty($idUsuario)) 
+            {
+                $transaccions = DB::table('transacciones_temporal')
+                    ->where('Bodega', '=', $idBod)
+                    ->where('responsable', '=', $use->name)
+                    ->get();
+            }
+            elseif (!empty($idBod) && !empty($fecha)) 
+            {
+                $transaccions = DB::table('transacciones_temporal')
+                    ->where('Bodega', '=', $idBod)
+                    ->where('fecha', '=', $fecha)
+                    ->get();
+            }
+            //---------------------------------------------------------------------------
 
-                $ub = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
+            elseif (!empty($idUsuario) && !empty($idItm)) 
+            {
+                $transaccions = DB::table('transacciones_temporal')
+                    ->where('Item', '=', $idItm)
+                    ->where('responsable', '=', $use->name)
+                    ->get();
+            }
+            elseif (!empty($fecha) && !empty($idItm)) 
+            {
+                $transaccions = DB::table('transacciones_temporal')
+                    ->where('Item', '=', $idItm)
+                    ->where('fecha', '=', $fecha)
+                    ->get();
+            }
+            //---------------------------------------------------------------------------
+            elseif (!empty($idUsuario) && !empty($fecha)) 
+            {
+                $transaccions = DB::table('transacciones_temporal')
+                    ->where('Item', '=', $idItm)
+                    ->where('fecha', '=', $fecha)
+                    ->get();
+            }    
 
-                $bodegas = new Collection();
-                $stockMoves = new Collection();
+            elseif (!empty($idBod)) 
+            {
+                $transaccions = DB::table('transacciones_temporal')
+                    ->where('Bodega', '=', $idBod)
+                    ->get();
+            }
+            elseif (!empty($idItm)) 
+            {
+                $transaccions = DB::table('transacciones_temporal')
+                    ->where('Item', '=', $idItm)
+                    ->get();
+            }
+            elseif (!empty($fecha)) 
+            {
+                $transaccions = DB::table('transacciones_temporal')
+                    ->where('fecha', '=', $fecha)
+                    ->get();
+            }
+            elseif (!empty($idUsuario)) 
+            {
+                $transaccions = DB::table('transacciones_temporal')
+                    ->where('responsable', '=', $use->name)
+                    ->get();
+            }
+            elseif (empty($idBod) && empty($fecha) && empty($idItm) && empty($idUsuario)) 
+            {
+                if (Auth::user()->rol == 2) {
+                    $stcMov = DB::table('transacciones_temporal')->get();
 
-                foreach ($bodegs as $b) {
-                    foreach ($ub as $u) 
-                    {
-                        if ($b->loc_code == $u->idBodega) 
+                    $bodegs = DB::table('0_locations')->get();
+
+                    $ub = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
+
+                    $bodegas = new Collection();
+                    $stockMoves = new Collection();
+
+                    foreach ($bodegs as $b) {
+                        foreach ($ub as $u) 
                         {
-                            $bodegas->push($b); 
-                        } 
-                    }            
-                }
+                            if ($b->loc_code == $u->idBodega) 
+                            {
+                                $bodegas->push($b); 
+                            } 
+                        }            
+                    }
 
-                foreach ($bodegas as $b) {
-                    foreach ($stcMov as $sm) {
-                        if ($sm->Bodega == $b->loc_code) {
-                            $stockMoves->push($sm);
+                    foreach ($bodegas as $b) {
+                        foreach ($stcMov as $sm) {
+                            if ($sm->Bodega == $b->loc_code) {
+                                $stockMoves->push($sm);
+                            }
                         }
                     }
+
+                    $transaccions = $stockMoves;
                 }
+                elseif (Auth::user()->rol == 1) 
+                {
+                    $transaccions = DB::table('transacciones_temporal')->get();
+                }
+                elseif (Auth::user()->rol == 3) {
+                    $stcMov = DB::table('transacciones_temporal')->paginate(15);
 
-                $transaccions = $stockMoves;
-            } 
-        }
+                    $bodegs = DB::table('0_locations')->get();
 
-            
+                    $ub = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
+
+                    $bodegas = new Collection();
+                    $stockMoves = new Collection();
+
+                    foreach ($bodegs as $b) {
+                        foreach ($ub as $u) 
+                        {
+                            if ($b->loc_code == $u->idBodega) 
+                            {
+                                $bodegas->push($b); 
+                            } 
+                        }            
+                    }
+
+                    foreach ($bodegas as $b) {
+                        foreach ($stcMov as $sm) {
+                            if ($sm->Bodega == $b->loc_code) {
+                                $stockMoves->push($sm);
+                            }
+                        }
+                    }
+
+                    $transaccions = $stockMoves;
+                } 
+            }    
+        }else
+        {
+            if (!empty($idBod) && !empty($fecha) && !empty($idItm) && !empty($idUsuario)) 
+            {
+                $transaccions = DB::table('transaccions')
+                    ->where('Bodega', '=', $idBod)
+                    ->where('fecha', '=', $fecha)
+                    ->where('Item', '=', $idItm)
+                    ->where('responsable', '=', $use->name)
+                    ->get();
+            }
+            elseif (!empty($idBod) && !empty($fecha) && empty($idItm) && !empty($idUsuario))
+             {
+                $transaccions = DB::table('transaccions')
+                    ->where('Bodega', '=', $idBod)
+                    ->where('fecha', '=', $fecha)
+                    ->where('responsable', '=', $use->name)
+                    ->get();
+            }
+            elseif (empty($idBod) && !empty($fecha) && !empty($idItm) && !empty($idUsuario))
+            {
+                $transaccions = DB::table('transaccions')
+                    ->where('fecha', '=', $fecha)
+                    ->where('Item', '=', $idItm)
+                    ->where('responsable', '=', $use->name)
+                    ->get();
+            }
+            elseif (!empty($idBod) && empty($fecha) && !empty($idItm) && !empty($idUsuario))
+            {
+                $transaccions = DB::table('transaccions')
+                    ->where('Bodega', '=', $idBod)
+                    ->where('Item', '=', $idItm)
+                    ->where('responsable', '=', $use->name)
+                    ->get();
+            }
+            elseif (!empty($idBod) && !empty($fecha) && !empty($idItm) && empty($idUsuario))
+            {
+                $transaccions = DB::table('transaccions')
+                    ->where('Bodega', '=', $idBod)
+                    ->where('Item', '=', $idItm)
+                    ->where('fecha', '=', $fecha)
+                    ->get();
+            }
+            //---------------------------------------------------------------------------
+
+            elseif (!empty($idBod) && !empty($idItm)) 
+            {
+                $transaccions = DB::table('transaccions')
+                    ->where('Bodega', '=', $idBod)
+                    ->where('Item', '=', $idItm)
+                    ->get();
+            }
+            elseif (!empty($idBod) && !empty($idUsuario)) 
+            {
+                $transaccions = DB::table('transaccions')
+                    ->where('Bodega', '=', $idBod)
+                    ->where('responsable', '=', $use->name)
+                    ->get();
+            }
+            elseif (!empty($idBod) && !empty($fecha)) 
+            {
+                $transaccions = DB::table('transaccions')
+                    ->where('Bodega', '=', $idBod)
+                    ->where('fecha', '=', $fecha)
+                    ->get();
+            }
+            //---------------------------------------------------------------------------
+
+            elseif (!empty($idUsuario) && !empty($idItm)) 
+            {
+                $transaccions = DB::table('transaccions')
+                    ->where('Item', '=', $idItm)
+                    ->where('responsable', '=', $use->name)
+                    ->get();
+            }
+            elseif (!empty($fecha) && !empty($idItm)) 
+            {
+                $transaccions = DB::table('transaccions')
+                    ->where('Item', '=', $idItm)
+                    ->where('fecha', '=', $fecha)
+                    ->get();
+            }
+            //---------------------------------------------------------------------------
+            elseif (!empty($idUsuario) && !empty($fecha)) 
+            {
+                $transaccions = DB::table('transaccions')
+                    ->where('Item', '=', $idItm)
+                    ->where('fecha', '=', $fecha)
+                    ->get();
+            }    
+
+            elseif (!empty($idBod)) 
+            {
+                $transaccions = DB::table('transaccions')
+                    ->where('Bodega', '=', $idBod)
+                    ->get();
+            }
+            elseif (!empty($idItm)) 
+            {
+                $transaccions = DB::table('transaccions')
+                    ->where('Item', '=', $idItm)
+                    ->get();
+            }
+            elseif (!empty($fecha)) 
+            {
+                $transaccions = DB::table('transaccions')
+                    ->where('fecha', '=', $fecha)
+                    ->get();
+            }
+            elseif (!empty($idUsuario)) 
+            {
+                $transaccions = DB::table('transaccions')
+                    ->where('responsable', '=', $use->name)
+                    ->get();
+            }
+            elseif (empty($idBod) && empty($fecha) && empty($idItm) && empty($idUsuario)) 
+            {
+                if (Auth::user()->rol == 2) {
+                    $stcMov = DB::table('transaccions')->get();
+
+                    $bodegs = DB::table('0_locations')->get();
+
+                    $ub = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
+
+                    $bodegas = new Collection();
+                    $stockMoves = new Collection();
+
+                    foreach ($bodegs as $b) {
+                        foreach ($ub as $u) 
+                        {
+                            if ($b->loc_code == $u->idBodega) 
+                            {
+                                $bodegas->push($b); 
+                            } 
+                        }            
+                    }
+
+                    foreach ($bodegas as $b) {
+                        foreach ($stcMov as $sm) {
+                            if ($sm->Bodega == $b->loc_code) {
+                                $stockMoves->push($sm);
+                            }
+                        }
+                    }
+
+                    $transaccions = $stockMoves;
+                }
+                elseif (Auth::user()->rol == 1) 
+                {
+                    $transaccions = DB::table('transaccions')->get();
+                }
+                elseif (Auth::user()->rol == 3) {
+                    $stcMov = DB::table('transaccions')->paginate(15);
+
+                    $bodegs = DB::table('0_locations')->get();
+
+                    $ub = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
+
+                    $bodegas = new Collection();
+                    $stockMoves = new Collection();
+
+                    foreach ($bodegs as $b) {
+                        foreach ($ub as $u) 
+                        {
+                            if ($b->loc_code == $u->idBodega) 
+                            {
+                                $bodegas->push($b); 
+                            } 
+                        }            
+                    }
+
+                    foreach ($bodegas as $b) {
+                        foreach ($stcMov as $sm) {
+                            if ($sm->Bodega == $b->loc_code) {
+                                $stockMoves->push($sm);
+                            }
+                        }
+                    }
+
+                    $transaccions = $stockMoves;
+                } 
+            }    
+        } 
 
         $bodeg = DB::table('0_locations')
                 ->get();
@@ -339,6 +572,8 @@ class ReporteTranController extends Controller
         $est=1;
 
         Session::put('transacciones',$transaccions);
+
+        DB::table('transacciones_temporal')->delete();
 
         return view('stock_moves.index', compact('bodegas','usuarios','items','idBod','fecha','idItm','idUsuario','est'))
             ->with('stockMoves', $transaccions);
@@ -414,9 +649,6 @@ class ReporteTranController extends Controller
             $transaccions = DB::table('transaccions')
                 ->get();
         }
-
-        
-
 
         $pdf = PDF::loadView('pdf.products', compact('transaccions'));
 

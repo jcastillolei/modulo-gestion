@@ -73,12 +73,6 @@
             @endforeach    
         </tbody>
       </table>
-      <div id="firma">
-        <p align="center">Firma encargado de bodega</p>
-      </div>
-      <div id="firma2">
-        <p align="center">Firma usuario solicitante</p>
-      </div>
     </main>
     <footer>
       Reporte generado a traves del modulo de gestion de inventario.
