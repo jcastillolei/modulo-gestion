@@ -11,13 +11,10 @@
     @foreach($usuarioBodegas as $usuarioBodega)
         <tr>
             <td>{!! $usuarioBodega->idBodega !!}</td>
-
             <td>
                 @php
-                    $itm = DB::table('0_locations')
-                   ->where('loc_code',$usuarioBodega['idBodega'])
-                    ->first();
-                    echo $itm->location_name;
+                    $nombreLocacion = DB::table('0_locations')->where('loc_code', $usuarioBodega->idBodega)->value('location_name');
+                    echo $nombreLocacion;
                 @endphp
             </td>
 
@@ -25,10 +22,8 @@
 
             <td>
                 @php
-                    $itm = DB::table('users')
-                   ->where('id',$usuarioBodega['idUsuario'])
-                    ->first();
-                    echo $itm->name;
+                    $nombreItem = DB::table('users')->where('id', $usuarioBodega->idUsuario)->value('name');
+                    echo $nombreItem;
                 @endphp
             </td>
 

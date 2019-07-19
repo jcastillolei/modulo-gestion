@@ -21,10 +21,18 @@
       <div id="project">
         <div><span>Establecimiento</span> Liceo Ignacio Domeyko</div>
         <div><span>Direccion</span> Juarez Larga, 760</div>
-        <div><span>Fecha</span> {{ date('d-m-Y') }}</div>
+        <div><span>Fecha</span> {{ $fecha }}</div>
       </div>
       <div id="project2">
-        <div><span>Bodega: </span>{{ $bodOrg }}</div>
+        <div>
+          <span>Bodega: </span>
+            @php
+              $org = DB::table('0_locations')
+                  ->where('loc_code',$bodOrg)
+                  ->first();
+            @endphp
+            {{ $org->location_name }}
+        </div>
       </div>
     </header>
     <main>
@@ -59,7 +67,7 @@
         <p align="center">Firma encargado de bodega</p>
       </div>
       <div id="firma2">
-        <p align="center">Firma usuario solicitante</p>
+        <p align="center">Firma usuario {!! $usSol !!}</p>
       </div>
     </main>
     <footer>

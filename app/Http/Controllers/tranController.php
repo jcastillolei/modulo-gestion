@@ -332,9 +332,11 @@ class tranController extends Controller
     {   
         $bodOrg = Session::get('idBod');
         $bodDes = Session::get('idItm');
+        $fecha = Session::get('fecha');
+
         
         $data = $this->getData();
-        $view =  \View::make('tran.inv', compact('data','bodOrg','bodDes'))->render();
+        $view =  \View::make('tran.inv', compact('data','bodOrg','bodDes','fecha'))->render();
         $pdf = \App::make('dompdf.wrapper');
         $pdf->setPaper('A4', 'portrait');
         $pdf->loadHTML($view);

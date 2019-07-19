@@ -35,7 +35,19 @@
         </thead>
         <tbody>
             @foreach($data as $d)
-                <tr>
+                @php
+                  $stock = DB::table('0_stock_moves as s')
+                    ->leftJoin('0_voided as b', 's.type', '=', 'b.type')
+                    ->leftJoin('0_voided as c', 's.trans_no', '=', 'c.id')
+                    ->whereNull('c.id')
+                    ->where('stock_id',$d->stock_id)
+                    ->where('tran_date','<=',date('Y-m-d'))
+                    ->where('loc_code',$d->loc_code)
+                    ->sum('qty'); 
+                @endphp
+
+                @if ($stock>0)
+                  <tr>
                     <td class="desc">{!! $d->loc_code !!}</td>
                     <td class="desc">
                       @php
@@ -57,19 +69,14 @@
                       @endphp
                     </td>
 
-                    <td class="qty">@php
-                            $stock = DB::table('0_stock_moves as s')
-                                ->leftJoin('0_voided as b', 's.type', '=', 'b.type')
-                                ->leftJoin('0_voided as c', 's.trans_no', '=', 'c.id')
-                                ->whereNull('c.id')
-                                ->where('stock_id',$d->stock_id)
-                                ->where('tran_date','<=',date('Y-m-d'))
-                                ->where('loc_code',$d->loc_code)
-                                ->sum('qty'); 
-                        echo $stock;
-                        @endphp
+                    <td class="qty">
+                      @php
+                          echo $stock;
+                      @endphp
                     </td>
-                </tr>
+                  </tr>
+                @endif
+
             @endforeach    
         </tbody>
       </table>

@@ -53,7 +53,7 @@ class ReporteInvController extends Controller
      */
     public function index(Request $request)
     {
-        $itemsBodega = DB::table('item_bodegas')->paginate(15);
+        $itemsBodega = DB::table('0_loc_stock')->get();
 
         Session::forget('itemsBodega');
 

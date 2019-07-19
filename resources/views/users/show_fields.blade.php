@@ -16,6 +16,19 @@
     <p>{!! $user->email !!}</p>
 </div>
 
+<!-- Rol Field -->
+<div class="form-group">
+    {!! Form::label('role', 'Rol:') !!}
+    <p>
+        @if(Auth::user()->rol==2)
+            Sub-Admin
+        @elseif(Auth::user()->rol==3)
+            Bodeguero
+        @else
+            Administrador
+        @endif
+    </p>
+</div>
 
 <!-- Password Field -->
 <div class="form-group">

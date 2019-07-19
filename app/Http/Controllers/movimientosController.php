@@ -295,7 +295,7 @@ class movimientosController extends Controller
 
                     $transacciones->save();
 
-
+                    Session::put('usuarioSolicitud',$use->nombre);
                     
                 }
 
@@ -445,12 +445,13 @@ class movimientosController extends Controller
 
                     $transacciones->save();
                     
-                       
+                    Session::put('usuarioSolicitud',$use->nombre);
                 }
 
                 $repor="true";
 
                 $itemsLista = Session::get('items');
+
       
             }
         }
@@ -532,6 +533,8 @@ class movimientosController extends Controller
         
         $bodOrg = Session::get('idBod');
         $acci = Session::get('acci');
+        $fecha = Session::get('fecha');
+        $usSol = Session::get('usuarioSolicitud');
 
         if ($acci[0]=="Despacho") {
             $acc="Despacho";
@@ -543,7 +546,7 @@ class movimientosController extends Controller
         echo $acci[0];
         $itemsLista = Session::get('items');   
 
-        $view =  \View::make('movimientos.inv', compact('itemsLista','bodOrg','acc'))->render();
+        $view =  \View::make('movimientos.inv', compact('itemsLista','bodOrg','acc','fecha','usSol'))->render();
         $pdf = \App::make('dompdf.wrapper');
         $pdf->setPaper('A4', 'portrait');
         $pdf->loadHTML($view);

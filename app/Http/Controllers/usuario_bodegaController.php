@@ -38,7 +38,7 @@ class usuario_bodegaController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $usuarioBodegas = usuario_bodega::paginate(15);
+        $usuarioBodegas = usuario_bodega::paginate(300);
 
         $usuarios = new Collection();
 
@@ -48,7 +48,7 @@ class usuario_bodegaController extends AppBaseController
             
             foreach ($bodegueros as $bod) {
                 foreach ($usuarioBodegas as $us) {
-
+                    
                     if ($bod->idBodeguero == $us->idUsuario) {
                         $usuarios->push($us);
                     }
@@ -71,7 +71,7 @@ class usuario_bodegaController extends AppBaseController
 
             }
         }
-        else if (Auth::user()->rol==1) {
+            else if (Auth::user()->rol==1) {
 
             $usuarios = $usuarioBodegas;
 

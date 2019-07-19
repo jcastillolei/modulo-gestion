@@ -48,24 +48,23 @@ class UsersExport implements FromCollection, WithHeadings, WithColumnFormatting,
             ->first();
         	
         	$stock = DB::table('0_stock_moves as s')
-                                ->leftJoin('0_voided as b', 's.type', '=', 'b.type')
-                                ->leftJoin('0_voided as c', 's.trans_no', '=', 'c.id')
-                                ->whereNull('c.id')
-                                ->where('stock_id',$it->stock_id)
-                                ->where('tran_date','<=',date('Y-m-d'))
-                                ->where('loc_code',Session::get('idBodItem'))
-                                ->sum('qty');
+                        ->leftJoin('0_voided as b', 's.type', '=', 'b.type')
+                        ->leftJoin('0_voided as c', 's.trans_no', '=', 'c.id')
+                        ->whereNull('c.id')
+                        ->where('stock_id',$it->stock_id)
+                        ->where('tran_date','<=',date('Y-m-d'))
+                        ->where('loc_code',$it->loc_code)
+                        ->sum('qty');
 
-        	$collection->push([
-        		'stock_id' => $it->stock_id,
-                'nombre item' => $itm->description,
-        		'loc_code' => $it->loc_code,
-                'nombre bodega' => $bod->location_name,
-        		'stock' => $stock
-        	]);
-
-
-
+            if ($stock>0) {
+                $collection->push([
+                    'stock_id' => $it->stock_id,
+                    'nombre item' => $itm->description,
+                    'loc_code' => $it->loc_code,
+                    'nombre bodega' => $bod->location_name,
+                    'stock' => $stock
+                ]);    
+            }
         }
 
         return $collection;

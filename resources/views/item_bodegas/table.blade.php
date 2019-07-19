@@ -13,44 +13,49 @@
 
         @else
             @foreach($itemsBodega as $itemBodega)
-                <tr>
-                    <td>{!! $itemBodega->loc_code !!}</td>
 
-                    <td class="desc">
-                      @php
-                        $bod = DB::table('0_locations')
-                            ->where('loc_code',$itemBodega->loc_code)
-                            ->first();
-                        echo $bod->location_name;
-                      @endphp
-                    </td>
+                @php
+                    $stock = DB::table('0_stock_moves as s')
+                        ->leftJoin('0_voided as b', 's.type', '=', 'b.type')
+                        ->leftJoin('0_voided as c', 's.trans_no', '=', 'c.id')
+                        ->whereNull('c.id')
+                        ->where('stock_id',$itemBodega->stock_id)
+                        ->where('tran_date','<=',date('Y-m-d'))
+                        ->where('loc_code',$itemBodega->loc_code)
+                        ->sum('qty'); 
+                @endphp
 
-                    <td>{!! $itemBodega->stock_id !!}</td>
+                @if ($stock>0)
+                    <tr>
+                        <td>{!! $itemBodega->loc_code !!}</td>
 
-                    <td class="desc">
-                      @php
-                        $itm = DB::table('0_stock_master')
-                            ->where('stock_id',$itemBodega->stock_id)
-                            ->first();
-                        echo $itm->description;
-                      @endphp
-                    </td>
-                    
-                    <td>
-                        @php
-                            $stock = DB::table('0_stock_moves as s')
-                                ->leftJoin('0_voided as b', 's.type', '=', 'b.type')
-                                ->leftJoin('0_voided as c', 's.trans_no', '=', 'c.id')
-                                ->whereNull('c.id')
-                                ->where('stock_id',$itemBodega->stock_id)
-                                ->where('tran_date','<=',date('Y-m-d'))
+                        <td class="desc">
+                          @php
+                            $bod = DB::table('0_locations')
                                 ->where('loc_code',$itemBodega->loc_code)
-                                ->sum('qty'); 
+                                ->first();
+                            echo $bod->location_name;
+                          @endphp
+                        </td>
 
-                            echo $stock;
-                        @endphp
-                    </td>
-                </tr>
+                        <td>{!! $itemBodega->stock_id !!}</td>
+
+                        <td class="desc">
+                          @php
+                            $itm = DB::table('0_stock_master')
+                                ->where('stock_id',$itemBodega->stock_id)
+                                ->first();
+                            echo $itm->description;
+                          @endphp
+                        </td>
+                        
+                        <td>
+                            @php
+                                echo $stock;
+                            @endphp
+                        </td>
+                    </tr>
+                @endif
             @endforeach
         @endif
     </tbody>

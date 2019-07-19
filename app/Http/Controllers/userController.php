@@ -46,7 +46,7 @@ class userController extends AppBaseController
     public function index(Request $request)
     {
 
-        $users = User::paginate(15);
+        $users = $this->userRepository->all();
 
         $usuarios = new Collection();
 
