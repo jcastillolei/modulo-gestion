@@ -400,28 +400,52 @@ class tranController extends Controller
 
     public function obtenerBodegas() 
     {
+        if (auth()->user()->rol!=1) {
+            $bodegas = locations::pluck('location_name','loc_code');
+            $bodeg = DB::table('0_locations')
+                    ->get();;
 
-        $bodegas = locations::pluck('location_name','loc_code');
-        $bodeg = DB::table('0_locations')
-                ->get();;
+            $ub = DB::table('usuario_bodegas')
+                    ->where('idUsuario', '=', auth()->user()->id)
+                    ->get();
 
-        $ub = DB::table('usuario_bodegas')
-                ->where('idUsuario', '=', auth()->user()->id)
-                ->get();
+            $bodegas = new Collection([]);
 
-        $bodegas = new Collection([]);
-
-        foreach ($bodeg as $b) {
-            foreach ($ub as $u) 
-            {
-                if ($b->loc_code == $u->idBodega) 
+            foreach ($bodeg as $b) {
+                foreach ($ub as $u) 
                 {
-                    $bodegas->put($b->loc_code, $b->location_name); 
-                } 
-            }            
-        }
+                    if ($b->loc_code == $u->idBodega) 
+                    {
+                        $bodegas->put($b->loc_code, $b->location_name); 
+                    } 
+                }            
+            }
 
-        $bodegas->put('0','Seleccione');
+            $bodegas->put('0','Seleccione');
+        }
+        else
+        {
+            $bodegas = locations::pluck('location_name','loc_code');
+            $bodeg = DB::table('0_locations')
+                    ->get();;
+
+            $ub = DB::table('usuario_bodegas')->get();
+
+            $bodegas = new Collection([]);
+
+            foreach ($bodeg as $b) {
+                foreach ($ub as $u) 
+                {
+                    if ($b->loc_code == $u->idBodega) 
+                    {
+                        $bodegas->put($b->loc_code, $b->location_name); 
+                    } 
+                }            
+            }
+
+            $bodegas->put('0','Seleccione');
+        }
+        
 
         return $bodegas;
     }

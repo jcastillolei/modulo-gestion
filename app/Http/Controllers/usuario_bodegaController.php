@@ -99,8 +99,10 @@ class usuario_bodegaController extends AppBaseController
             $bd = new Collection();
 
             foreach ($bodegasUsuario as $b) {
+
                 foreach ($bods as $bo) {
                     if ($b->idBodega == $bo->loc_code) {
+
                         $bd->push($bo);
                     }
                 }

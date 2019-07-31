@@ -53,13 +53,13 @@ class ReporteInvController extends Controller
      */
     public function index(Request $request)
     {
-        $itemsBodega = DB::table('0_loc_stock')->get();
-
         Session::forget('itemsBodega');
 
         if (Auth::user()->rol == 1) {
             $bodegas = locations::pluck('location_name','loc_code');
+            $itemsBodega = DB::table('0_loc_stock')->get();
         }else{
+
             $bodeg = DB::table('0_locations')
                 ->get();;
 
@@ -68,16 +68,24 @@ class ReporteInvController extends Controller
                     ->get();
 
             $bodegas = new Collection([]);
+            $itms = new Collection([]);
 
             foreach ($bodeg as $b) {
                 foreach ($ub as $u) 
                 {
                     if ($b->loc_code == $u->idBodega) 
                     {
-                        $bodegas->put($b->loc_code, $b->location_name); 
+                        $bodegas->put($b->loc_code, $b->location_name);
+                        $itm = DB::table('0_loc_stock')->where('loc_code', '=', $b->loc_code)->first();
+                        $itms->push($itm);
                     } 
                 }            
             }
+
+            //--------------------------------------//
+
+            $itemsBodega = $itms;
+
         }
 
         $bodegas->put('0','Seleccione');
@@ -154,7 +162,6 @@ class ReporteInvController extends Controller
                 foreach ($bodegasUsuario as $b) {
                     foreach ($bods as $bo) {
                         if ($b->idBodega == $bo->loc_code) {
-                            echo $b->idBodega;
                             $bd->push($bo);
                         }
                     }
@@ -187,7 +194,6 @@ class ReporteInvController extends Controller
                 foreach ($bodegasUsuario as $b) {
                     foreach ($bods as $bo) {
                         if ($b->idBodega == $bo->loc_code) {
-                            echo $b->idBodega;
                             $bd->push($bo);
                         }
                     }
