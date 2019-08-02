@@ -22,6 +22,7 @@
                     </thead>
 
                     <tbody>
+                    	{!! Form::open(['route' => 'tran.store']) !!} 
 		                    <tr>
 		                        <td>
 		                            {!! Form::select('item', $items, 1, ['class' => 'form-control']) !!}
@@ -87,7 +88,7 @@
 	                        @endif
 	                    {!! Form::close() !!}
 
-	                    {!! Form::open(['route' => 'tran.store']) !!}       
+	                          
                     </tbody>
                 </table>                     
             </div>

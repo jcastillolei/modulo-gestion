@@ -22,9 +22,10 @@
                     </thead>
 
                     <tbody>
+                    	{!! Form::open(['route' => 'movimientos.store']) !!}  
 		                    <tr>
 		                        <td>
-		                            {!! Form::select('item', $items, 0, ['class' => 'form-control']) !!}
+		                            {!! Form::select('item', $items, 1, ['class' => 'form-control']) !!}
 		                        </td>
 		                        <td>
 		                            {!! Form::number('cantidad', null, ['class' => 'form-control', 'required']) !!}
@@ -111,7 +112,7 @@
 	                        @endif
 	                    {!! Form::close() !!}
 
-	                    {!! Form::open(['route' => 'movimientos.store']) !!}       
+	                         
                     </tbody>
                 </table>                     
             </div>
