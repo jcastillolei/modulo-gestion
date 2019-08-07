@@ -33,6 +33,7 @@ use Maatwebsite\Excel\Concerns\FromView;
 use Dompdf\Dompdf;
     
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class tranController extends Controller
 {
@@ -43,10 +44,24 @@ class tranController extends Controller
      */
     public function index()
     {
+        if (Auth::user()->rol == 1) {
 
-        $tran = new tranController();
-        $bodegas = $tran->obtenerBodegas();
-        $items = $tran->obtenerItems();
+            $tran = new tranController();
+            
+
+            $bd = DB::table('0_locations')->get();
+
+            $bodegas = $bd->pluck('location_name','loc_code');
+            $items = $tran->obtenerItems();  
+        }
+        else
+        {
+            $tran = new tranController();
+            $bodegas = $tran->obtenerBodegas();
+            $items = $tran->obtenerItems();  
+        }
+
+        
 
         Session::forget('items');
         $repor = null;

@@ -42,7 +42,8 @@ class stock_masterController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $stockMasters = stock_master::paginate(15);
+        //$stockMasters = stock_master::paginate(15);
+        $stockMasters = $this->stockMasterRepository->all();
 
         return view('stock_masters.index')
             ->with('stockMasters', $stockMasters);

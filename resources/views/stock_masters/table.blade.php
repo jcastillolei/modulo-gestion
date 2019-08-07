@@ -43,4 +43,3 @@
     @endforeach
     </tbody>
 </table>
-<div align="center">{{ $stockMasters->links() }}</div>
