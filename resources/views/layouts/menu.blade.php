@@ -56,11 +56,11 @@
         <a href="{!! route('usuarioBodegas.index') !!}"><i class="fa fa-sitemap"></i><span>Asignar Bodega</span></a>
     </li>
 
-{{--
+
     <li class="{{ Request::is('usuarioNormals*') ? 'active' : '' }}">
         <a href="{!! route('usuarioNormals.index') !!}"><i class="fa fa-user-o"></i><span>Usuario Normal</span></a>
     </li> 
---}}
+
 
     <li class="{{ Request::is('users*') ? 'active' : '' }}">
         <a href="{!! route('users.index') !!}"><i class="fa fa-user"></i><span>Bodegueros</span></a>
