@@ -49,6 +49,8 @@ class transacciones_usuariofinalController extends AppBaseController
             
             $usuarios = DB::table('usuario_normals')->get();
 
+            $transaccionesFinal =  DB::table('transacciones_usuariofinal')->get();
+
         }else{
 
             $bodegasAcargo = DB::table('usuario_bodegas')->where('idUsuario', Auth::user()->id)->get();
@@ -171,7 +173,7 @@ class transacciones_usuariofinalController extends AppBaseController
             
             $usuarios = DB::table('usuario_normals')->get();
 
-            Session::put('transacciones',$transaccions);
+            $transaccionesFinal = $transaccions;
 
         }else{
 
