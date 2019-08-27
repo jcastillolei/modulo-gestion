@@ -119,3 +119,9 @@
 @endif
 
 
+
+
+<li class="{{ Request::is('transaccionesUsuariofinals*') ? 'active' : '' }}">
+    <a href="{!! route('transaccionesUsuariofinals.index') !!}"><i class="fa fa-edit"></i><span>Transacciones Usuariofinals</span></a>
+</li>
+

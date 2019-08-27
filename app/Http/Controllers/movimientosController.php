@@ -8,6 +8,9 @@ use App\User;
 use App\Models\TipoTransaccion;
 use App\Models\locations;
 use App\Models\Transacciones;
+
+use App\Models\transacciones_usuariofinal;
+
 use App\Models\stock_master;
 use App\Models\stock_moves;
 use App\Models\usuario_normal;
@@ -296,6 +299,20 @@ class movimientosController extends Controller
                     $transacciones->save();
 
                     Session::put('usuarioSolicitud',$use->nombre);
+
+                    //-------------------------Registra transacción de usuario final----------------------------------------
+
+                    $transac = new transacciones_usuariofinal;
+
+                    $transac->Id_UsuarioFinal = $use->nombre." ".$use->apellido;
+                    $transac->Codigo_bodega = $idBod;
+                    $transac->Codigo_item = $itm['stock_id'];
+                    $transac->Descripcion_item = $ite->description;
+                    $transac->Cantidad = $itm['cantidad'];
+                    $transac->tipo_transaccion = "Despacho";
+                    $transac->Fecha = date('Y-m-d');
+
+                    $transac->save();
                     
                 }
 
@@ -446,6 +463,20 @@ class movimientosController extends Controller
                     $transacciones->save();
                     
                     Session::put('usuarioSolicitud',$use->nombre);
+
+                    //-------------------------Registra transacción de usuario final----------------------------------------
+
+                    $transac = new transacciones_usuariofinal;
+
+                    $transac->Id_UsuarioFinal = $use->nombre." ".$use->apellido;
+                    $transac->Codigo_bodega = $idBod;
+                    $transac->Codigo_item = $itm['stock_id'];
+                    $transac->Descripcion_item = $ite->description;
+                    $transac->Cantidad = $itm['cantidad'];
+                    $transac->tipo_transaccion = "Devolucion";
+                    $transac->Fecha = date('Y-m-d');
+
+                    $transac->save();
                 }
 
                 $repor="true";
