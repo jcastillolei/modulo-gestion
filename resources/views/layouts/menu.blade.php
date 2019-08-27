@@ -20,6 +20,10 @@
         <a href="{!! route('RepLog.index') !!}"><i class="fa fa-file-text"></i><span>Logs</span></a>
     </li>
 
+    <li class="{{ Request::is('transaccionesUsuariofinals*') ? 'active' : '' }}">
+        <a href="{!! route('transaccionesUsuariofinals.index') !!}"><i class="fa fa-list"></i><span>Transacciones Usuario Normal</span></a>
+    </li>
+
     <li class="{{ Request::is('usuarioBodegas*') ? 'active' : '' }}">
         <a href="{!! route('usuarioBodegas.index') !!}"><i class="fa fa-sitemap"></i><span>Asignar Bodega</span></a>
     </li>
@@ -41,12 +45,19 @@
     </li>
 
 
+
+
 @elseif(!empty(Session::get('rol')) && Session::get('rol') == 2)
     
 
     <li class="{{ Request::is('reports*') ? 'active' : '' }}">
         <a href="{!! route('reports.index') !!}"><i class="fa fa-line-chart"></i><span>Transacciones</span></a>
     </li>
+
+    <li class="{{ Request::is('transaccionesUsuariofinals*') ? 'active' : '' }}">
+        <a href="{!! route('transaccionesUsuariofinals.index') !!}"><i class="fa fa-list"></i><span>Transacciones Usuario Normal</span></a>
+    </li>
+
 
     <li class="{{ Request::is('reportss*') ? 'active' : '' }}">
         <a href="{!! route('reportss.index') !!}"><i class="fa fa-edit"></i><span>Item Bodegas</span></a>
@@ -84,11 +95,6 @@
 
     </li>
 --}}
-@if (!empty(Session::get('estonoexiste')))
-    
-@endif
-    
-
 
 @elseif(!empty(Session::get('rol')) && Session::get('rol') == 3)
 {{--
@@ -98,6 +104,11 @@
 --}}
     <li class="{{ Request::is('reportss*') ? 'active' : '' }}">
         <a href="{!! route('reportss.index') !!}"><i class="fa fa-edit"></i><span>Item Bodegas</span></a>
+
+    <li class="{{ Request::is('transaccionesUsuariofinals*') ? 'active' : '' }}">
+        <a href="{!! route('transaccionesUsuariofinals.index') !!}"><i class="fa fa-list"></i><span>Transacciones Usuario Normal</span></a>
+    </li>
+
     </li>
 
     <li class="{{ Request::is('usuarioNormals*') ? 'active' : '' }}">
@@ -117,11 +128,3 @@
     </li>
 
 @endif
-
-
-
-
-<li class="{{ Request::is('transaccionesUsuariofinals*') ? 'active' : '' }}">
-    <a href="{!! route('transaccionesUsuariofinals.index') !!}"><i class="fa fa-edit"></i><span>Transacciones Usuariofinals</span></a>
-</li>
-

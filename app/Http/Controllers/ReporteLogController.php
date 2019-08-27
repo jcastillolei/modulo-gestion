@@ -47,7 +47,7 @@ class ReporteLogController extends Controller
      */
     public function index(Request $request)
     {
-        $logs = DB::table('logs')->paginate(30);
+        $logs = DB::table('logs')->paginate(300);
 
         $usuarios = User::pluck('name','id');
         $usuarios->put('0','Seleccione');

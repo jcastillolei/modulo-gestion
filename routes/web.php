@@ -105,9 +105,7 @@ Route::resource('sadminBodegueros', 'sadmin_bodegueroController');
 
 Route::get('/usuBodega','movimientosController@getUsers');
 
-
-
-
-
-
 Route::resource('transaccionesUsuariofinals', 'transacciones_usuariofinalController');
+
+
+Route::get('exportExcelTransUsu', 'transacciones_usuariofinalController@exportExcel');

@@ -305,12 +305,13 @@ class movimientosController extends Controller
                     $transac = new transacciones_usuariofinal;
 
                     $transac->Id_UsuarioFinal = $use->nombre." ".$use->apellido;
+                    $transac->IdUsu = $use->id;
                     $transac->Codigo_bodega = $idBod;
                     $transac->Codigo_item = $itm['stock_id'];
                     $transac->Descripcion_item = $ite->description;
                     $transac->Cantidad = $itm['cantidad'];
                     $transac->tipo_transaccion = "Despacho";
-                    $transac->Fecha = date('Y-m-d');
+                    $transac->Fecha = $fecha;
 
                     $transac->save();
                     
@@ -474,7 +475,7 @@ class movimientosController extends Controller
                     $transac->Descripcion_item = $ite->description;
                     $transac->Cantidad = $itm['cantidad'];
                     $transac->tipo_transaccion = "Devolucion";
-                    $transac->Fecha = date('Y-m-d');
+                    $transac->Fecha = $fecha;
 
                     $transac->save();
                 }

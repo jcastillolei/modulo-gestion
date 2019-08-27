@@ -33,6 +33,7 @@ class transacciones_usuariofinal extends Model
 
     public $fillable = [
         'Id_UsuarioFinal',
+        'IdUsu',
         'Codigo_bodega',
         'Codigo_item',
         'Descripcion_item',
